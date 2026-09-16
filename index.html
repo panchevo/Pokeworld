@@ -195,7 +195,7 @@ html,body{font-family:'Segoe UI',sans-serif;background:#0a0e1a;overflow:hidden;c
 .inv-item .ii-count{color:#ffcb05;font-weight:bold}
 #teamBtn,#shopBtn,#invBtn{position:fixed;z-index:5000;border-radius:14px;padding:12px 18px;color:#fff;font-size:14px;font-weight:bold;cursor:pointer;text-transform:uppercase;transition:all .15s;pointer-events:auto}
 #teamBtn{bottom:16px;right:16px;background:linear-gradient(180deg,#3b82f6,#1e40af);border:2px solid #93c5fd;box-shadow:0 4px 0 #1e3a8a}
-#shopBtn{bottom:16px;right:200px;background:linear-gradient(180deg,#f59e0b,#b45309);border:2px solid #fde68a;box-shadow:0 4px 0 #78350f}
+#shopBtn{bottom:16px;right:185px;background:linear-gradient(180deg,#f59e0b,#b45309);border:2px solid #fde68a;box-shadow:0 4px 0 #78350f}
 #invBtn{bottom:16px;right:360px;background:linear-gradient(180deg,#8b5cf6,#6d28d9);border:2px solid #c4b5fd;box-shadow:0 4px 0 #4c1d95}
 #teamBtn:hover,#shopBtn:hover,#invBtn:hover{transform:translateY(-2px)}
 #dialogScreen{position:fixed;bottom:0;left:0;right:0;z-index:1900;padding:20px;display:none}
@@ -241,7 +241,7 @@ html,body{font-family:'Segoe UI',sans-serif;background:#0a0e1a;overflow:hidden;c
 @keyframes qmarkBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 .npc-quest .label{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:11px;white-space:nowrap;background:rgba(0,0,0,.85);padding:2px 8px;border-radius:8px;opacity:0;transition:opacity .15s;pointer-events:none}
 .npc-quest:hover .label{opacity:1}
-#questBtn{position:fixed;z-index:5000;border-radius:14px;padding:12px 18px;color:#fff;font-size:14px;font-weight:bold;cursor:pointer;text-transform:uppercase;transition:all .15s;bottom:16px;right:520px;background:linear-gradient(180deg,#a855f7,#7c3aed);border:2px solid #d8b4fe;box-shadow:0 4px 0 #4c1d95}
+#questBtn{position:fixed;z-index:5000;border-radius:14px;padding:12px 18px;color:#fff;font-size:14px;font-weight:bold;cursor:pointer;text-transform:uppercase;transition:all .15s;bottom:16px;right:565px;background:linear-gradient(180deg,#a855f7,#7c3aed);border:2px solid #d8b4fe;box-shadow:0 4px 0 #4c1d95}
 #questBtn:hover{transform:translateY(-2px)}
 #questBtn .qbadge{position:absolute;top:-6px;right:-6px;background:#ef4444;color:#fff;font-size:11px;font-weight:bold;border-radius:10px;padding:1px 6px;min-width:18px;text-align:center;border:2px solid #fff}
 
@@ -648,41 +648,15 @@ html,body{
   white-space: nowrap;
 }
 #top{position:absolute;top:0;left:0;width:3000px;height:2000px;display:block;pointer-events:none;z-index:900000}
-html,body{font-family:'Pixelify Sans', sans-serif; ...}
-/* или */
-html,body{font-family:'Tiny5', sans-serif; ...}
 
-@font-face {
-  font-family: 'Pixelify Sans';
-  src: url('PixelifySans-Black.ttf') format('truetype');
-  font-weight: 900;      /* Black = 900 */
-  font-style: normal;
-  font-display: swap;
-}
+
+
+
 
 *{margin:0;padding:0;box-sizing:border-box}
 
-html,body{font-family:'Pixelify Sans','Segoe UI',sans-serif;font-weight:900;background:#0a0e1a;overflow:hidden;color:#fff;user-select:none;-webkit-user-select:none}
 
 
-
-html,body{
-  font-family:'Pixelify Sans','Segoe UI',sans-serif;
-  font-weight:900;
-  background:#0a0e1a;
-  overflow:hidden;
-  height:100%;
-  width:100%;
-  position:fixed;
-  top:0; left:0; right:0; bottom:0;
-  color:#fff;
-  user-select:none;
-  -webkit-user-select:none;
-  overscroll-behavior:none;
-  touch-action:none;
-  -webkit-text-size-adjust:100%;
-  text-size-adjust:100%;
-}
 
 *, *::before, *::after {
   font-family: inherit;
@@ -691,13 +665,35 @@ button, input, textarea, select {
   font-family: inherit;
 }
 
-.npc-quest .label,
+
+
+
+
+@font-face {
+  font-family: 'Pokemon Classic';
+  src: url('Pokemon Classic.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+
+html, body{font-family:'Pokemon Classic','Segoe UI',sans-serif;
+font-weight:normal;text-size:9px !important;}.npc-quest .label,
 #labels .label,
 .pokemon .label,
 .trainer .label,
 .building .label {
-  font-family: 'Pixelify Sans', 'Segoe UI', sans-serif;
-  font-weight: 900;
+  font-family: 'Pokemon Classic', 'Segoe UI', sans-serif;
+  font-weight: normal;
+}
+
+*, *::before, *::after {
+  font-family: inherit;
+}
+button, input, textarea, select {
+  font-family: inherit;
 }
 </style>
 </head>
@@ -2538,7 +2534,7 @@ function updateHUD(){
       if(nextBiome&&!unlockedZones.has(nextBiome)){
         const prog=zoneProgress[biome]||{defeated:0};
         progEl.textContent=`${prog.defeated||0}/${DEFAULT_UNLOCK.count}`;
-      }else progEl.textContent="✓";
+      }else progEl.textContent="✔";
     }else{zoneEl.textContent="—";progEl.textContent="—"}
   }
   const badgesEl=document.getElementById('badges');
@@ -3145,9 +3141,9 @@ el._labelEl = label;
 const qmark = document.createElement('div');
 qmark.className = 'qmark new';
 qmark.id = 'qmark_' + q.id;
-qmark.textContent = '❗';
-qmark.style.left = (spawnX-5) + 'px';
-qmark.style.top  = (spawnY - 64) + 'px';
+qmark.textContent = '!';
+qmark.style.left = (spawnX-2) + 'px';
+qmark.style.top  = (spawnY - 50) + 'px';
 qmark.style.display = unlockedZones.has(q.biome) ? 'block' : 'none';
 document.getElementById('questMarks').appendChild(qmark);
 
@@ -3186,14 +3182,17 @@ document.getElementById('questMarks').appendChild(qmark);
       mark.style.filter = 'drop-shadow(0 0 4px #4ade80)';
       mark.style.color = '#4ade80';
     } else if(st && st.completed){
-      mark.textContent = '✅';
+      mark.textContent = '★';
       mark.style.filter = 'drop-shadow(0 0 4px #4ade80)';
+      mark.style.color = '#4ade80';
     } else if(st){
       mark.textContent = '…';
       mark.style.filter = 'drop-shadow(0 0 4px #fbbf24)';
+      mark.style.color = '#fbbf24';
     } else {
-      mark.textContent = '❗';
+      mark.textContent = '!';
       mark.style.filter = 'drop-shadow(0 0 4px #fbbf24)';
+      mark.style.color = '#fbbf24';
     }
   });
 }
@@ -3977,7 +3976,7 @@ function drawTopLayer(){
     ctx.globalAlpha = 1;
 
     // Плашка под название
-    ctx.font = '900 15px "Pixelify Sans", sans-serif';
+ctx.font = '15px "Pokemon Classic", "Segoe UI", sans-serif';
     const text = h.name.toUpperCase();
     const tw = ctx.measureText(text).width;
     const tx = cx - tw/2 - 10;
@@ -4424,7 +4423,7 @@ function drawCloud(ctx,cloud,t){
   ctx.restore();
 
   ctx.save();
-  ctx.font='900 46px "Pixelify Sans", "Segoe UI", sans-serif';
+  ctx.font='46px "Pokemon Classic", "Segoe UI", sans-serif';
   ctx.textAlign='center';
   ctx.textBaseline='middle';
   ctx.shadowColor='rgba(0,0,0,0.95)';
@@ -4464,7 +4463,7 @@ function drawTopLayer(){
     ctx.restore();
 
     ctx.save();
-    ctx.font='900 15px "Pixelify Sans", "Segoe UI", sans-serif';
+    ctx.font='900 15px "Pokemon Classic", "Segoe UI", sans-serif';
     ctx.textAlign='center';
     ctx.textBaseline='middle';
     ctx.shadowColor='rgba(0,0,0,0.95)';
