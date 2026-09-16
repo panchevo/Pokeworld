@@ -4520,6 +4520,68 @@ function openPokedex(p,playerPk){
     const moves=getMovesWithData(playerPk);
     playerMovesHTML=`<div class="dex-section-title">🎯 Атаки (Ур. ${playerPk.level})</div><div class="mpd-moves">${moves.map(m=>`<div class="mpd-move" style="border-left-color:${TYPE_COLORS[m.type]||'#777'}"><div><span class="mname">${m.name}</span></div><div style="display:flex;gap:8px;align-items:center"><span class="mtype" style="background:${TYPE_COLORS[m.type]||'#777'}">${m.type}</span><span class="mpower">${m.power?'⚡'+m.power:'—'}</span></div></div>`).join('')}</div>`;
   }
+// ====== ПОЛНЫЙ СПИСОК СПОСОБНОСТЕЙ ======
+let allMovesHTML = '';
+{
+  const ls = LEARNSETS[p.id] || [];
+  // Сортируем по уровню изучения
+  const sorted = [...ls].sort((a,b)=>a.level-b.level);
+
+  if(sorted.length){
+    // Уровни, которые покемон уже знает (если есть playerPk)
+    const currentLvl = playerPk ? playerPk.level : 0;
+    const knownNames = playerPk ? playerPk.moves.map(m=>m.name) : [];
+
+    allMovesHTML = `<div class="dex-section-title">📖 Все способности (${sorted.length})</div>
+      <div class="mpd-moves">${
+        sorted.map(entry=>{
+          const md = FULL_MOVES[entry.move] || {type:"Обычный",power:40,cat:"physical"};
+          const isKnown = knownNames.includes(entry.move);
+          const isAvailable = playerPk && entry.level <= currentLvl;
+          const isFuture = playerPk && entry.level > currentLvl;
+
+          // Класс и цвет рамки
+          let cls = 'mpd-move';
+          if(isFuture) cls += ' locked';
+
+          // Метка: «изучено» / «доступно» / «на ур. N»
+          let statusTag = '';
+          if(playerPk){
+            if(isKnown){
+              statusTag = `<span style="font-size:10px;color:#4ade80;font-weight:bold">✓ изучено</span>`;
+            } else if(isAvailable){
+              statusTag = `<span style="font-size:10px;color:#fbbf24;font-weight:bold">★ доступно</span>`;
+            }
+          }
+
+          const powerText = md.power ? `⚡${md.power}` : '—';
+          const catIcon = md.cat === 'special' ? '✦'
+                        : md.cat === 'status' ? '◈'
+                        : md.cat === 'physical' ? '⚔' : '';
+
+          return `<div class="${cls}" style="border-left-color:${TYPE_COLORS[md.type]||'#777'}">
+            <div style="flex:1">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <span class="mname">${entry.move}</span>
+                <span class="learn-lvl">на ур. ${entry.level}</span>
+                ${statusTag}
+              </div>
+              ${md.desc ? `<div style="font-size:10px;color:#94a3b8;margin-top:2px">${md.desc}</div>` : ''}
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;flex-shrink:0">
+              <span class="mtype" style="background:${TYPE_COLORS[md.type]||'#777'}">${md.type}</span>
+              <span class="mpower" title="${md.cat}">${catIcon} ${powerText}</span>
+            </div>
+          </div>`;
+        }).join('')
+      }</div>`;
+  } else {
+    allMovesHTML = `<div class="dex-section-title">📖 Все способности</div>
+      <div style="font-size:12px;color:#94a3b8;padding:8px">Для этого покемона набор способностей не задан.</div>`;
+  }
+}
+
+
   content.innerHTML=`
     <div class="dex-header">
       <div class="dex-sprite">${getSprite(p.shape)}</div>
@@ -4538,7 +4600,8 @@ function openPokedex(p,playerPk){
         <div class="dex-stat"><span class="k">Категория</span><span class="v">${p.category}</span></div>
         <div class="dex-stat"><span class="k">Всего статов</span><span class="v">${total}</span></div>
       </div>
-      ${playerMovesHTML}
+          ${playerMovesHTML}
+      ${allMovesHTML}
       ${weakHTML}
       <div class="dex-section-title">Базовые характеристики</div>
       ${statBar('HP',p.stats.hp,255,'#ef4444')}
@@ -4550,8 +4613,9 @@ function openPokedex(p,playerPk){
       <button class="dex-close" onclick="closePokedex()">Закрыть ✕</button>
     </div>`;
   dex.classList.add('active');
+  hideMenuButtons();   // ← скрываем кнопки меню
 }
-function closePokedex(){document.getElementById('pokedex').classList.remove('active')}
+function closePokedex(){document.getElementById('pokedex').classList.remove('active');  showMenuButtons();  }
 
 // ===================== КОМАНДА =====================
 function openTeamScreen(){
@@ -5925,11 +5989,7 @@ document.getElementById('shopBtn').addEventListener('click',openShop);
 document.getElementById('invBtn').addEventListener('click',openInventory);
 document.getElementById('questBtn').addEventListener('click',openQuestScreen);
 document.getElementById('pokedex').addEventListener('click',e=>{if(e.target.id==='pokedex')closePokedex()});
-window.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){
-    closePokedex();  closeAllScreens();   closeTeamScreen();closeMyPokemonDetail();closePokecenter();closeShop();closeInventory();closeQuestScreen();
-  }
-});
+
 
 // Запуск
 initGame();
