@@ -3093,8 +3093,8 @@ const qmark = document.createElement('div');
 qmark.className = 'qmark new';
 qmark.id = 'qmark_' + q.id;
 qmark.textContent = '❗';
-qmark.style.left = spawnX + 'px';
-qmark.style.top  = (spawnY - 34) + 'px';
+qmark.style.left = (spawnX-5) + 'px';
+qmark.style.top  = (spawnY - 64) + 'px';
 qmark.style.display = unlockedZones.has(q.biome) ? 'block' : 'none';
 document.getElementById('questMarks').appendChild(qmark);
 
