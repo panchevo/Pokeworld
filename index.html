@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -622,6 +623,8 @@ html,body{
   text-size-adjust:100%;
 }
 
+
+
 /* === Слой значков квестов — выше подписей и NPC, но ниже названий городов === */
 #questMarks {
   position: absolute;
@@ -645,7 +648,57 @@ html,body{
   white-space: nowrap;
 }
 #top{position:absolute;top:0;left:0;width:3000px;height:2000px;display:block;pointer-events:none;z-index:900000}
+html,body{font-family:'Pixelify Sans', sans-serif; ...}
+/* или */
+html,body{font-family:'Tiny5', sans-serif; ...}
 
+@font-face {
+  font-family: 'Pixelify Sans';
+  src: url('PixelifySans-Black.ttf') format('truetype');
+  font-weight: 900;      /* Black = 900 */
+  font-style: normal;
+  font-display: swap;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+html,body{font-family:'Pixelify Sans','Segoe UI',sans-serif;font-weight:900;background:#0a0e1a;overflow:hidden;color:#fff;user-select:none;-webkit-user-select:none}
+
+
+
+html,body{
+  font-family:'Pixelify Sans','Segoe UI',sans-serif;
+  font-weight:900;
+  background:#0a0e1a;
+  overflow:hidden;
+  height:100%;
+  width:100%;
+  position:fixed;
+  top:0; left:0; right:0; bottom:0;
+  color:#fff;
+  user-select:none;
+  -webkit-user-select:none;
+  overscroll-behavior:none;
+  touch-action:none;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+
+*, *::before, *::after {
+  font-family: inherit;
+}
+button, input, textarea, select {
+  font-family: inherit;
+}
+
+.npc-quest .label,
+#labels .label,
+.pokemon .label,
+.trainer .label,
+.building .label {
+  font-family: 'Pixelify Sans', 'Segoe UI', sans-serif;
+  font-weight: 900;
+}
 </style>
 </head>
 <body>
@@ -3924,7 +3977,7 @@ function drawTopLayer(){
     ctx.globalAlpha = 1;
 
     // Плашка под название
-    ctx.font = 'bold 15px sans-serif';
+    ctx.font = '900 15px "Pixelify Sans", sans-serif';
     const text = h.name.toUpperCase();
     const tw = ctx.measureText(text).width;
     const tx = cx - tw/2 - 10;
@@ -4371,7 +4424,7 @@ function drawCloud(ctx,cloud,t){
   ctx.restore();
 
   ctx.save();
-  ctx.font='bold 46px sans-serif';
+  ctx.font='900 46px "Pixelify Sans", "Segoe UI", sans-serif';
   ctx.textAlign='center';
   ctx.textBaseline='middle';
   ctx.shadowColor='rgba(0,0,0,0.95)';
@@ -4411,7 +4464,7 @@ function drawTopLayer(){
     ctx.restore();
 
     ctx.save();
-    ctx.font='bold 15px sans-serif';
+    ctx.font='900 15px "Pixelify Sans", "Segoe UI", sans-serif';
     ctx.textAlign='center';
     ctx.textBaseline='middle';
     ctx.shadowColor='rgba(0,0,0,0.95)';
