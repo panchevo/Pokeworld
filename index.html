@@ -3054,8 +3054,11 @@ function pickNpcSvg(npcName){
 // ===================== СПАВН NPC С КВЕСТАМИ =====================
 function spawnQuestNPCs(){
   // Очистка старых ссылок (на случай перезапуска)
-  npcQuestRefs.forEach(ref => {
+    npcQuestRefs.forEach(ref => {
     if(ref.el && ref.el.parentNode) ref.el.parentNode.removeChild(ref.el);
+    if(ref.el && ref.el._labelEl && ref.el._labelEl.parentNode){
+      ref.el._labelEl.parentNode.removeChild(ref.el._labelEl);
+    }
   });
   npcQuestRefs = [];
 
@@ -3176,8 +3179,8 @@ document.getElementById('questMarks').appendChild(qmark);
     if(!mark) return;
 
     // === ФИКС: синхронизируем видимость с состоянием зоны ===
+  // ФИКС: синхронизируем видимость значка с состоянием зоны
     mark.style.display = unlockedZones.has(q.biome) ? 'block' : 'none';
-
     const st = activeQuests[q.id];
     mark.style.color = '';
     if(st && st.claimed){
@@ -4892,11 +4895,11 @@ function checkUnlockNextZone(currentBiome){
   if(unlockedZones.has(nextBiome))return;
   const prog=zoneProgress[currentBiome]||{defeated:0};
   if((prog.defeated||0)>=DEFAULT_UNLOCK.count){
-    unlockedZones.add(nextBiome);
+unlockedZones.add(nextBiome);
     saveProgress();
     drawBackground();
     rebuildFogClouds();
-    updateQuestMarkers();   // ← ДОБАВИТЬ ЭТО
+    updateQuestMarkers();   // ФИКС: показать значки ! в новой зоне
     showToast(`🗺️ Открыта новая зона: ${HABITATS[nextBiome].name}!`,3500);
   }
 }
@@ -5629,9 +5632,16 @@ function enemyFainted(){
       } else {
         playerMoney+=battleState.reward||0;
         showBattleLog(`🏆 ${battleState.trainerName} побеждён! +${battleState.reward} монет!`);
-        if(currentTrainer){
+              if(currentTrainer){
           const idx=trainersOnMap.findIndex(t=>t.data===currentTrainer.tmpl);
-          if(idx>=0){trainersOnMap[idx].el.remove();trainersOnMap.splice(idx,1)}
+          if(idx>=0){
+            const tr = trainersOnMap[idx];
+            if(tr.el && tr.el.parentNode) tr.el.remove();
+            if(tr.el && tr.el._labelEl && tr.el._labelEl.parentNode){
+              tr.el._labelEl.remove();
+            }
+            trainersOnMap.splice(idx,1);
+          }
           currentTrainer=null;
         }
         updateHUD();
