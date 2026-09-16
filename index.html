@@ -2217,7 +2217,7 @@ const DEFAULT_UNLOCK={type:"defeat",count:3};
 let unlockedZones=new Set(["pallet"]);
 let zoneProgress={};
 let earnedBadges=new Set();
-
+const WILD_POWER_MULT = 0.7;
 const BADGES={
 pewter:{name:"Каменный значок",gym:"Брок"},
 cerulean:{name:"Каскадный значок",gym:"Мисти"},
@@ -2253,24 +2253,24 @@ const TRAINER_TEMPLATES=[
 const QUEST_DEFS=[
 // --- Паллет-Таун ---
 {id:"q_catch3",biome:"pallet",npc:"Профессор Оук",npcPos:{x:550,y:1660},
-  title:"Первые шаги",desc:"Поймай 3 разных покемонов, чтобы заполнить покедекс.",
-  type:"catch",target:3,reward:{money:500,items:{pokeball:5}},dialogue:"Привет, юный тренер! Помоги мне заполнить покедекс — поймай 3 разных покемонов."},
+  title:"Первые шаги",desc:"Поймай 1 покемона",
+  type:"catch",target:1,reward:{money:500,items:{pokeball:5}},dialogue:"Привет, юный тренер! Помоги мне для исследования — поймай 1 покемона."},
 {id:"q_defeat_pallet5",biome:"pallet",npc:"Мама",npcPos:{x:650,y:1600},
-  title:"Забота мамы",desc:"Победи 5 диких покемонов, чтобы стать сильнее.",
-  type:"defeat",target:5,reward:{money:300,items:{potion:3}},dialogue:"Сынок, будь осторожен! Победи 5 диких покемонов и возвращайся."},
+  title:"Забота мамы",desc:"Победи 2 диких покемонов, чтобы стать сильнее.",
+  type:"defeat",target:2,reward:{money:300,items:{potion:3}},dialogue:"Сынок, будь осторожен! Победи 2 диких покемонов и возвращайся."},
 
 // --- Виридиан-Сити ---
 {id:"q_defeat_viridian8",biome:"viridian",npc:"Тренер Виридиан",npcPos:{x:520,y:1060},
-  title:"Тренировка в городе",desc:"Победи 8 покемонов в Виридиан-Сити.",
-  type:"defeat",target:8,reward:{money:800,items:{superball:3}},dialogue:"Эй, новичок! Хочешь стать сильнее? Победи 8 покемонов здесь!"},
+  title:"Тренировка в городе",desc:"Победи 3 покемонов в Виридиан-Сити.",
+  type:"defeat",target:3,reward:{money:800,items:{superball:3}},dialogue:"Эй, новичок! Хочешь стать сильнее? Победи 3 покемонов здесь!"},
 {id:"q_catch_pidgey",biome:"viridian",npc:"Птицелов Тим",npcPos:{x:750,y:1100},
   title:"Птичья коллекция",desc:"Поймай Пиджи или Ратату.",
   type:"catch_specific",targetIds:[16,19],target:1,reward:{money:600,items:{pokeball:5}},dialogue:"Я собираю птиц и мышей! Принеси мне Пиджи или Ратату — и получишь награду."},
 
 // --- Маршрут ---
 {id:"q_defeat_route10",biome:"route",npc:"Рейнджер Маршрута",npcPos:{x:900,y:1450},
-  title:"Очистка маршрута",desc:"Победи 10 покемонов на маршрутах.",
-  type:"defeat",target:10,reward:{money:1000,items:{superpotion:2}},dialogue:"Маршруты кишат дикими покемонами! Помоги очистить их — победи 10."},
+  title:"Очистка маршрута",desc:"Победи 5 покемонов на маршрутах.",
+  type:"defeat",target:5,reward:{money:1000,items:{superpotion:2}},dialogue:"Маршруты кишат дикими покемонами! Помоги очистить их — победи 5."},
 {id:"q_level_team",biome:"route",npc:"Тренер-ветеран",npcPos:{x:1200,y:1000},
   title:"Сильная команда",desc:"Доведи любого покемона до 10 уровня.",
   type:"level",target:10,reward:{money:1200,items:{revive:1}},dialogue:"Настоящий тренер должен иметь сильного покемона! Доведи кого-нибудь до 10 уровня."},
@@ -2477,18 +2477,19 @@ function loadProgress(){
     return true;
   }catch(e){console.warn("Load error",e);return false}
 }
-
-// ===================== ПОКЕМОНЫ ИГРОКА =====================
-function createPlayerPokemon(data,level){
+function createPlayerPokemon(data,level,options){
   level=level||5;
+  options=options||{};
+  const mult=options.powerMult!==undefined?options.powerMult:1;
+
   const b=1+(level-1)*0.08;
   const base=data.stats;
   const pk={
     data,level,exp:0,expToNext:level*15+20,
-    maxHP:Math.floor(base.hp*b*2),currentHP:Math.floor(base.hp*b*2),
-    atk:Math.floor(base.attack*b),def:Math.floor(base.defense*b),
-    spAtk:Math.floor(base.spAtk*b),spDef:Math.floor(base.spDef*b),
-    spd:Math.floor(base.speed*b),
+    maxHP:Math.floor(base.hp*b*2*mult),currentHP:Math.floor(base.hp*b*2*mult),
+    atk:Math.floor(base.attack*b*mult),def:Math.floor(base.defense*b*mult),
+    spAtk:Math.floor(base.spAtk*b*mult),spDef:Math.floor(base.spDef*b*mult),
+    spd:Math.floor(base.speed*b*mult),
     moves:[],status:null,statusTurns:0,statMods:{atk:0,def:0,spAtk:0,spDef:0,spd:0},rageBonus:0
   };
   learnMovesForLevel(pk,level);
@@ -2635,7 +2636,7 @@ function getZoneBiomeAt(x,y){
 
 // ===================== СПАВН =====================
 const ZONE_CONFIG={
-  pallet:    {levels:[2,4],   rarities:{common:14, uncommon:2}},
+  pallet:    {levels:[1,2],   rarities:{common:14, uncommon:2}},
   viridian:  {levels:[3,5],   rarities:{common:14, uncommon:3}},
   route:     {levels:[3,6],   rarities:{common:12, uncommon:5, rare:1}},
   forest:    {levels:[5,8],   rarities:{common:10, uncommon:6, rare:2}},
@@ -3173,10 +3174,12 @@ document.getElementById('questMarks').appendChild(qmark);
   QUEST_DEFS.forEach(q=>{
     const mark = document.getElementById('qmark_' + q.id);
     if(!mark) return;
+
+    // === ФИКС: синхронизируем видимость с состоянием зоны ===
+    mark.style.display = unlockedZones.has(q.biome) ? 'block' : 'none';
+
     const st = activeQuests[q.id];
-
     mark.style.color = '';
-
     if(st && st.claimed){
       mark.textContent = '✓';
       mark.style.filter = 'drop-shadow(0 0 4px #4ade80)';
@@ -4831,9 +4834,10 @@ function showStarterScreen(){
     grid.appendChild(card);
   });
 }
+const STARTER_POWER_MULT = 1.4;   // на 40% сильнее по всем статам
 function chooseStarter(id){
   const data=POKEMON_DATA.find(p=>p.id===id);if(!data)return;
-  const pk=createPlayerPokemon(data,5);
+  const pk=createPlayerPokemon(data,5,{ powerMult: STARTER_POWER_MULT });
   playerTeam.push(pk);
   document.getElementById('starterScreen').classList.add('hidden');
   updateHUD();
@@ -4881,8 +4885,6 @@ function updateMusic(){
     if(!music.paused) music.pause();
   }
 }
-
-// ===================== РАЗБЛОКИРОВКА ЗОН =====================
 function checkUnlockNextZone(currentBiome){
   const idx=ZONE_ORDER.indexOf(currentBiome);
   if(idx===-1||idx>=ZONE_ORDER.length-1)return;
@@ -4894,6 +4896,7 @@ function checkUnlockNextZone(currentBiome){
     saveProgress();
     drawBackground();
     rebuildFogClouds();
+    updateQuestMarkers();   // ← ДОБАВИТЬ ЭТО
     showToast(`🗺️ Открыта новая зона: ${HABITATS[nextBiome].name}!`,3500);
   }
 }
@@ -5042,7 +5045,7 @@ function startBattle(enemyData, biomeOverride, mapRef){
   const biome=biomeOverride||getCurrentZoneBiome()||"route";
   const [minL,maxL]=getZoneLevels(biome);
   const enemyLevel=minL+Math.floor(Math.random()*(maxL-minL+1));
-  const enemy=createPlayerPokemon(enemyData,enemyLevel);
+  const enemy=createPlayerPokemon(enemyData,enemyLevel,{ powerMult: WILD_POWER_MULT });
   battleState={enemy,playerIndex:playerTeam.findIndex(p=>p.currentHP>0),turn:'player',busy:false,isTrainer:false,isGym:false,enemyTeam:null,enemyIndex:0,mapRef:mapRef||null,playerProtect:false,enemyProtect:false,lastPlayerDamage:0,lastEnemyDamage:0,lastPlayerMove:null,lastEnemyMove:null};
   activePokemonIndex=battleState.playerIndex;
   document.getElementById('battleScreen').classList.add('active');
@@ -5549,7 +5552,7 @@ function enemyFainted(){
   const enemy=battleState.enemy;
   const player=playerTeam[battleState.playerIndex];
   showBattleLog(`Вражеский ${enemy.data.name} побеждён!`);
-  const expGain=Math.floor(enemy.level*8+enemy.maxHP*.3);
+  const expGain=Math.floor((enemy.level*8+enemy.maxHP*.3) * 2.5); // ×2.5 опыта
   player.exp+=expGain;
   showToast(`${player.data.name} получает ${expGain} опыта!`);
   const moneyGain=Math.floor(enemy.level*15+enemy.maxHP*.5+Math.random()*20);
