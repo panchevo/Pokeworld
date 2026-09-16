@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>Pokeworld</title>
+<title>Мир Покемонов — Канто</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{font-family:'Segoe UI',sans-serif;background:#0a0e1a;overflow:hidden;color:#fff;user-select:none;-webkit-user-select:none}
@@ -370,6 +370,50 @@ html,body{font-family:'Segoe UI',sans-serif;background:#0a0e1a;overflow:hidden;c
   box-shadow: 0 0 8px rgba(168,85,247,.8);
 }
 
+.npc-quest .qmark {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  font-size: 22px;
+  filter: drop-shadow(0 0 4px #fbbf24);
+  animation: qmarkBounce 1s infinite;
+  z-index: 999999 !important;   /* ← поверх всего */
+  pointer-events: none;
+}
+
+.npc-quest .label {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  white-space: nowrap;
+  background: rgba(0,0,0,.85);
+  padding: 2px 8px;
+  border-radius: 8px;
+  opacity: 0.9;
+  transition: opacity .15s;
+  pointer-events: none;
+  z-index: 999999 !important;   /* ← поверх всего */
+  border: 1px solid #a855f7;
+  box-shadow: 0 0 8px rgba(168,85,247,.8);
+}
+#labels {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3000px;
+  height: 2000px;
+  pointer-events: none;
+  z-index: 950000;   /* ← было 500000 */
+}
+
+/* NPC с квестами — поверх всех объектов мира.
+   !important нужен, потому что у .pokemon/.trainer тоже есть z-index,
+   а JS ставит его инлайново с !important ниже. */
+.npc-quest {
+  z-index: 900000 !important;
+}
 </style>
 </head>
 <body>
@@ -2345,8 +2389,9 @@ function spawnPokemonInZone(p, biome, forcedZone) {
     caughtSet.add(p.id);
     updateHUD(); saveProgress();
   });
-  world.appendChild(el);
-el.style.zIndex = yToZPokemon(pos.y)
+   world.appendChild(el);
+  el.style.zIndex = yToZPokemon(pos.y);
+
   pokemonsOnMap.push({ el, x: pos.x, y: pos.y, data: p, hidden: false, biome, zone: zoneRef });
 }
 
@@ -2411,6 +2456,7 @@ label.className = 'label';
 label.textContent = tmpl.name;
 label.style.left = pos.x + 'px';
 label.style.top  = (pos.y + 22) + 'px';
+label.style.zIndex = 900001;
 document.getElementById('labels').appendChild(label);
 el._labelEl = label;
     el.style.transform=`translate(${pos.x}px,${pos.y}px)`;
@@ -2645,6 +2691,8 @@ label.className = 'label';
 label.textContent = q.npc;
 label.style.left = spawnX + 'px';
 label.style.top  = (spawnY + 22) + 'px';   // 22px ниже центра NPC
+label.style.zIndex = 900001;                // ← поверх всех
+label.style.top  = (spawnY + 22) + 'px';   // 22px ниже центра NPC
 document.getElementById('labels').appendChild(label);
 
 // сохраняем ссылку, чтобы двигать/удалять
@@ -2690,8 +2738,10 @@ el._labelEl = label;
     });
 
     // Добавляем в мир
-    world.appendChild(el);
-el.style.zIndex = yToZ(pos.y);
+        world.appendChild(el);
+    // NPC с квестом — всегда поверх зданий, тренеров и покемонов,
+    // чтобы значки ❗ / ✅ / … / ✓ были видны
+    el.style.zIndex = 900000;
     // Сохраняем ссылку
     npcQuestRefs.push({
       el,
