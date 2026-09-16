@@ -884,7 +884,6 @@ function showMenuButtons() {
 }
 
 
-// ===================== ЗАКРЫТИЕ ВСЕХ ОКОН =====================
 function closeAllScreens() {
   document.getElementById('pokedex').classList.remove('active');
   document.getElementById('teamScreen').classList.remove('active');
@@ -896,9 +895,12 @@ function closeAllScreens() {
   document.getElementById('dialogScreen').classList.remove('active');
   document.getElementById('evolveScreen').classList.remove('active');
   dialogCallback = null;
+
+  // НЕ показываем кнопки, если идёт бой
+  if(!document.getElementById('battleScreen').classList.contains('active')){
+    showMenuButtons();
+  }
 }
-
-
 window.addEventListener('DOMContentLoaded', function(){
 "use strict";
 
@@ -921,7 +923,8 @@ celadon:{name:"Селадон-Сити",color:"#f9a8d4",bg:"rgba(220,150,190,0.4
 fuchsia:{name:"Фуксия-Сити",color:"#f472b6",bg:"rgba(200,120,160,0.4)",type:"city"},
 saffron:{name:"Саффрон-Сити",color:"#fcd34d",bg:"rgba(220,180,100,0.4)",type:"city"},
 cinnabar:{name:"Остров Циннабар",color:"#f87171",bg:"rgba(220,120,100,0.4)",type:"city"},
-indigo:{name:"Индиго-Плато",color:"#fbbf24",bg:"rgba(200,160,80,0.4)",type:"city"}
+indigo:{name:"Индиго-Плато",color:"#fbbf24",bg:"rgba(200,160,80,0.4)",type:"city"},
+seafoam:{name:"Морские Острова",color:"#67e8f9",bg:"rgba(60,140,180,0.55)",type:"nature"}
 };
 
 const BIOME_ZONES=[
@@ -937,7 +940,8 @@ const BIOME_ZONES=[
 {biome:"cerulean",x:1600,y:300,w:300,h:200},{biome:"celadon",x:1400,y:900,w:300,h:200},
 {biome:"saffron",x:1900,y:550,w:300,h:200},{biome:"lavender",x:2200,y:1000,w:300,h:200},
 {biome:"vermilion",x:1800,y:1400,w:300,h:200},{biome:"fuchsia",x:2600,y:1450,w:300,h:200},
-{biome:"cinnabar",x:2200,y:1800,w:250,h:150},{biome:"indigo",x:150,y:100,w:400,h:250}
+{biome:"cinnabar",x:2200,y:1800,w:250,h:150},{biome:"indigo",x:150,y:100,w:400,h:250},
+{biome:"seafoam",x:1200,y:1500,w:400,h:250}
 ];
 
 // ===================== ТАБЛИЦА ТИПОВ =====================
@@ -1073,13 +1077,13 @@ const POKEMON_DATA=[
 {id:1,name:"Бульбазавр",types:["Трава","Яд"],rarity:"rare",habitats:["forest","route","pallet"],desc:"На спине растёт семечко.",height:0.7,weight:6.9,category:"Семечко",stats:{hp:45,attack:49,defense:49,spAtk:65,spDef:65,speed:45},shape:"bulbasaur",evolvesTo:2,evolveLevel:16},
 {id:4,name:"Чармандер",types:["Огонь"],rarity:"rare",habitats:["mountain","volcano","pallet"],desc:"На хвосте горит пламя.",height:0.6,weight:8.5,category:"Ящерица",stats:{hp:39,attack:52,defense:43,spAtk:60,spDef:50,speed:65},shape:"charmander",evolvesTo:5,evolveLevel:16},
 {id:7,name:"Сквиртл",types:["Вода"],rarity:"rare",habitats:["water","cerulean","pallet"],desc:"Стреляет водой изо рта.",height:0.5,weight:9,category:"Черепаха",stats:{hp:44,attack:48,defense:65,spAtk:50,spDef:64,speed:43},shape:"squirtle",evolvesTo:8,evolveLevel:16},
-{id:131,name:"Лапрас",types:["Вода","Лёд"],rarity:"rare",habitats:["water"],desc:"Перевозит людей через океаны.",height:2.5,weight:220,category:"Транспорт",stats:{hp:130,attack:85,defense:80,spAtk:85,spDef:95,speed:60},shape:"lapras"},
+{id:131,name:"Лапрас",types:["Вода","Лёд"],rarity:"rare",habitats:["water","seafoam"],desc:"Перевозит людей через океаны.",height:2.5,weight:220,category:"Транспорт",stats:{hp:130,attack:85,defense:80,spAtk:85,spDef:95,speed:60},shape:"lapras"},
 {id:147,name:"Дратини",types:["Дракон"],rarity:"rare",habitats:["water","cave"],desc:"Существует тысячи лет.",height:1.8,weight:3.3,category:"Дракон",stats:{hp:41,attack:64,defense:45,spAtk:50,spDef:50,speed:50},shape:"dratini",evolvesTo:148,evolveLevel:30},
 {id:6,name:"Чаризард",types:["Огонь","Летающий"],rarity:"epic",habitats:["volcano","mountain"],desc:"Извергает огонь, плавящий камни.",height:1.7,weight:90.5,category:"Пламя",stats:{hp:78,attack:84,defense:78,spAtk:109,spDef:85,speed:100},shape:"charizard"},
 {id:9,name:"Бластойз",types:["Вода"],rarity:"epic",habitats:["water"],desc:"Панцирь — крепость.",height:1.6,weight:85.5,category:"Панцирь",stats:{hp:79,attack:83,defense:100,spAtk:85,spDef:105,speed:78},shape:"blastoise"},
 {id:3,name:"Венузавр",types:["Трава","Яд"],rarity:"epic",habitats:["forest"],desc:"Цветок источает аромат.",height:2,weight:100,category:"Семечко",stats:{hp:80,attack:82,defense:83,spAtk:100,spDef:100,speed:80},shape:"venusaur"},
 {id:94,name:"Генгар",types:["Призрак","Яд"],rarity:"epic",habitats:["cave","lavender"],desc:"Прячется в тени.",height:1.5,weight:40.5,category:"Тень",stats:{hp:60,attack:65,defense:60,spAtk:130,spDef:75,speed:110},shape:"gengar"},
-{id:130,name:"Гьярадос",types:["Вода","Летающий"],rarity:"epic",habitats:["water"],desc:"Эволюция Магикарпа.",height:6.5,weight:235,category:"Ужас",stats:{hp:95,attack:125,defense:79,spAtk:60,spDef:100,speed:81},shape:"gyarados"},
+{id:130,name:"Гьярадос",types:["Вода","Летающий"],rarity:"epic",habitats:["water","seafoam"],desc:"Эволюция Магикарпа.",height:6.5,weight:235,category:"Ужас",stats:{hp:95,attack:125,defense:79,spAtk:60,spDef:100,speed:81},shape:"gyarados"},
 {id:150,name:"Мьюту",types:["Психик"],rarity:"legendary",habitats:["cave"],desc:"Создан в лаборатории.",height:2,weight:122,category:"Генетический",stats:{hp:106,attack:110,defense:90,spAtk:154,spDef:90,speed:130},shape:"mewtwo"},
 {id:151,name:"Мью",types:["Психик"],rarity:"legendary",habitats:["forest"],desc:"Прародитель всех покемонов.",height:0.4,weight:4,category:"Новый вид",stats:{hp:100,attack:100,defense:100,spAtk:100,spDef:100,speed:100},shape:"mew"},
 {id:144,name:"Артикуно",types:["Лёд","Летающий"],rarity:"legendary",habitats:["water"],desc:"Легендарная птица льда.",height:1.7,weight:55.4,category:"Заморозка",stats:{hp:90,attack:85,defense:100,spAtk:95,spDef:125,speed:85},shape:"articuno"},
@@ -1090,6 +1094,14 @@ const POKEMON_DATA=[
 {id:2,name:"Ивизавр",types:["Трава","Яд"],rarity:"epic",habitats:["forest"],desc:"Эволюция Бульбазавра.",height:1,weight:13,category:"Семечко",stats:{hp:60,attack:62,defense:63,spAtk:80,spDef:80,speed:60},shape:"bulbasaur"},
 {id:5,name:"Чармелеон",types:["Огонь"],rarity:"epic",habitats:["mountain","volcano"],desc:"Эволюция Чармандера.",height:1.1,weight:19,category:"Пламя",stats:{hp:58,attack:64,defense:58,spAtk:80,spDef:65,speed:80},shape:"charmander"},
 {id:8,name:"Вартортл",types:["Вода"],rarity:"epic",habitats:["water"],desc:"Эволюция Сквиртла.",height:1,weight:22.5,category:"Черепаха",stats:{hp:59,attack:63,defense:80,spAtk:65,spDef:80,speed:58},shape:"squirtle"}
+
+,
+{id:143,name:"Снорлакс",types:["Обычный"],rarity:"rare",habitats:["route","forest","mountain"],desc:"Спит почти всё время, но страшен в бою.",height:2.1,weight:460,category:"Соня",stats:{hp:160,attack:110,defense:65,spAtk:65,spDef:110,speed:30},shape:"snorlax"},
+{id:149,name:"Драгонайт",types:["Дракон","Летающий"],rarity:"epic",habitats:["water","cave","indigo","seafoam"],desc:"Добрый дракон-хранитель.",height:2.2,weight:210,category:"Дракон",stats:{hp:91,attack:134,defense:95,spAtk:100,spDef:100,speed:80},shape:"dragonite"},
+{id:65,name:"Алаказам",types:["Психик"],rarity:"epic",habitats:["saffron","cave"],desc:"IQ выше 5000.",height:1.5,weight:48,category:"Психик",stats:{hp:55,attack:50,defense:45,spAtk:135,spDef:95,speed:120},shape:"alakazam"},
+{id:68,name:"Мачамп",types:["Боевой"],rarity:"rare",habitats:["mountain","route"],desc:"Мастер всех боевых искусств.",height:1.6,weight:130,category:"Суперсила",stats:{hp:90,attack:130,defense:80,spAtk:65,spDef:85,speed:55},shape:"machamp"},
+{id:134,name:"Вапореон",types:["Вода"],rarity:"rare",habitats:["water","cerulean","seafoam"],desc:"Эволюция Иви в воде.",height:1.0,weight:29,category:"Пузырь",stats:{hp:130,attack:65,defense:60,spAtk:110,spDef:95,speed:65},shape:"vaporeon"}
+
 ];
 
 const RARITY_COLORS={common:"#9ca3af",uncommon:"#4ade80",rare:"#60a5fa",epic:"#a855f7",legendary:"#fbbf24"};
@@ -1097,41 +1109,121 @@ const RARITY_NAMES={common:"Обычный",uncommon:"Необычный",rare:"
 const TYPE_COLORS={Обычный:"#a8a878",Огонь:"#f08030",Вода:"#6890f0",Трава:"#78c850",Электрик:"#f8d030",Лёд:"#98d8d8",Боевой:"#c03028",Яд:"#a040a0",Земля:"#e0c068",Летающий:"#a890f0",Психик:"#f85888",Жук:"#a8b820",Камень:"#b8a038",Призрак:"#705898",Дракон:"#7038f8",Тёмный:"#705848",Сталь:"#b8b8d0",Фея:"#ee99ac"};
 
 // ===================== НАБОРЫ АТАК =====================
+// ===================== НАБОРЫ АТАК (сдвинутые уровни) =====================
 const LEARNSETS={
-1:[{level:1,move:"Захват"},{level:7,move:"Хлыст лозой"},{level:13,move:"Острый лист"},{level:20,move:"Сонный порошок"},{level:27,move:"Солнечный луч"},{level:31,move:"Ядовитая пыльца"},{level:36,move:"Гига-осушение"}],
-4:[{level:1,move:"Царапка"},{level:7,move:"Уголёк"},{level:13,move:"Огненный клык"},{level:20,move:"Огнемёт"},{level:27,move:"Огненный взрыв"},{level:31,move:"Огненный вихрь"},{level:36,move:"Воля-о-висп"}],
-7:[{level:1,move:"Захват"},{level:7,move:"Водяной пистолет"},{level:13,move:"Укус"},{level:20,move:"Серфинг"},{level:27,move:"Гидронасос"},{level:31,move:"Струя воды"},{level:36,move:"Мягкая защита"}],
-25:[{level:1,move:"Электрошок"},{level:5,move:"Быстрая атака"},{level:10,move:"Громовая волна"},{level:18,move:"Гром"},{level:26,move:"Гром"},{level:30,move:"Разряд молнии"},{level:34,move:"Молния"}],
-10:[{level:1,move:"Захват"},{level:9,move:"Укус жука"},{level:15,move:"Двойной удар"},{level:22,move:"Высасывание"}],
-13:[{level:1,move:"Ядовитое жало"},{level:9,move:"Укус жука"},{level:15,move:"Токсичный шип"},{level:22,move:"Отравление"}],
-16:[{level:1,move:"Захват"},{level:5,move:"Быстрая атака"},{level:15,move:"Атака крылом"},{level:29,move:"Воздушный резак"},{level:33,move:"Ускорение"},{level:37,move:"Контрудар"}],
-19:[{level:1,move:"Захват"},{level:4,move:"Быстрая атака"},{level:10,move:"Укус"},{level:16,move:"Гипер клык"},{level:22,move:"Контрудар"},{level:28,move:"Разрушение"}],
-41:[{level:1,move:"Высасывание жизни"},{level:11,move:"Укус"},{level:21,move:"Атака крылом"},{level:27,move:"Отравленный клык"},{level:33,move:"Поцелуй вампира"}],
-74:[{level:1,move:"Захват"},{level:11,move:"Бросок камня"},{level:21,move:"Каменная лавина"},{level:31,move:"Землетрясение"},{level:36,move:"Тройной удар"},{level:40,move:"Взрыв"}],
-129:[{level:1,move:"Всплеск"},{level:15,move:"Захват"},{level:25,move:"Отчаяние"},{level:30,move:"Разрушение"}],
-130:[{level:1,move:"Укус"},{level:26,move:"Водяной хвост"},{level:36,move:"Гидронасос"},{level:40,move:"Молния"},{level:44,move:"Разрушение"}],
-133:[{level:1,move:"Захват"},{level:10,move:"Быстрая атака"},{level:20,move:"Укус"},{level:30,move:"Взять силой"},{level:35,move:"Контрудар"},{level:40,move:"Мягкая защита"}],
-54:[{level:1,move:"Водяной пистолет"},{level:6,move:"Конфузия"},{level:16,move:"Водяной импульс"},{level:26,move:"Психик"},{level:31,move:"Гидронасос"},{level:36,move:"Синтез"}],
-63:[{level:1,move:"Конфузия"},{level:16,move:"Псилуч"},{level:21,move:"Психик"},{level:26,move:"Теневой шар"},{level:31,move:"Гипноз"},{level:36,move:"Отражение"}],
-92:[{level:1,move:"Лизание"},{level:12,move:"Ночная тень"},{level:22,move:"Теневой шар"},{level:26,move:"Пожиратель снов"},{level:31,move:"Гипноз"},{level:36,move:"Поцелуй вампира"}],
-94:[{level:1,move:"Теневой шар"},{level:1,move:"Пожиратель снов"},{level:1,move:"Психик"},{level:1,move:"Лизание"},{level:1,move:"Гипноз"}],
-131:[{level:1,move:"Водяной пистолет"},{level:10,move:"Толчок телом"},{level:20,move:"Ледяной луч"},{level:30,move:"Серфинг"},{level:35,move:"Гидронасос"},{level:40,move:"Ледяной ветер"}],
-147:[{level:1,move:"Обёртывание"},{level:10,move:"Вихрь"},{level:20,move:"Удар"},{level:35,move:"Ярость"},{level:40,move:"Драконий натиск"}],
+// --- Стартовики и их эволюции ---
+1:[{level:1,move:"Захват"},{level:4,move:"Хлыст лозой"},{level:8,move:"Острый лист"},{level:12,move:"Сонный порошок"},{level:16,move:"Солнечный луч"},{level:20,move:"Ядовитая пыльца"},{level:24,move:"Гига-осушение"}],
+2:[{level:1,move:"Острый лист"},{level:1,move:"Хлыст лозой"},{level:1,move:"Сонный порошок"},{level:16,move:"Солнечный луч"},{level:20,move:"Ядовитая пыльца"},{level:24,move:"Гига-осушение"}],
+3:[{level:1,move:"Солнечный луч"},{level:1,move:"Острый лист"},{level:1,move:"Сонный порошок"},{level:1,move:"Толчок телом"},{level:1,move:"Ядовитая пыльца"},{level:24,move:"Гига-осушение"}],
+
+4:[{level:1,move:"Царапка"},{level:4,move:"Уголёк"},{level:8,move:"Огненный клык"},{level:12,move:"Огнемёт"},{level:16,move:"Огненный взрыв"},{level:20,move:"Огненный вихрь"},{level:24,move:"Воля-о-висп"}],
+5:[{level:1,move:"Огнемёт"},{level:1,move:"Огненный клык"},{level:12,move:"Огненный взрыв"},{level:16,move:"Уголёк"},{level:20,move:"Огненный вихрь"},{level:24,move:"Воля-о-висп"}],
 6:[{level:1,move:"Огнемёт"},{level:1,move:"Воздушный резак"},{level:1,move:"Огненный взрыв"},{level:1,move:"Драконий натиск"},{level:1,move:"Воля-о-висп"}],
+
+7:[{level:1,move:"Захват"},{level:4,move:"Водяной пистолет"},{level:8,move:"Укус"},{level:12,move:"Серфинг"},{level:16,move:"Гидронасос"},{level:20,move:"Струя воды"},{level:24,move:"Мягкая защита"}],
+8:[{level:1,move:"Серфинг"},{level:1,move:"Водяной пистолет"},{level:12,move:"Гидронасос"},{level:16,move:"Укус"},{level:20,move:"Струя воды"},{level:24,move:"Мягкая защита"}],
 9:[{level:1,move:"Серфинг"},{level:1,move:"Ледяной луч"},{level:1,move:"Гидронасос"},{level:1,move:"Толчок телом"},{level:1,move:"Мягкая защита"}],
-3:[{level:1,move:"Солнечный луч"},{level:1,move:"Острый лист"},{level:1,move:"Сонный порошок"},{level:1,move:"Толчок телом"},{level:1,move:"Ядовитая пыльца"}],
+
+// --- Пикачу ---
+25:[{level:1,move:"Электрошок"},{level:3,move:"Быстрая атака"},{level:7,move:"Громовая волна"},{level:11,move:"Гром"},{level:15,move:"Разряд молнии"},{level:19,move:"Молния"},{level:23,move:"Ускорение"}],
+
+// --- Жуки ---
+10:[{level:1,move:"Захват"},{level:4,move:"Укус жука"},{level:8,move:"Двойной удар"},{level:12,move:"Высасывание"}],
+11:[{level:1,move:"Захват"},{level:1,move:"Укус жука"}],
+13:[{level:1,move:"Ядовитое жало"},{level:4,move:"Укус жука"},{level:8,move:"Токсичный шип"},{level:12,move:"Отравление"}],
+14:[{level:1,move:"Ядовитое жало"},{level:1,move:"Укус жука"},{level:12,move:"Токсичный шип"},{level:16,move:"Отравление"}],
+
+// --- Птицы ---
+16:[{level:1,move:"Захват"},{level:3,move:"Быстрая атака"},{level:7,move:"Атака крылом"},{level:11,move:"Воздушный резак"},{level:15,move:"Ускорение"},{level:19,move:"Контрудар"},{level:23,move:"Сверлящий клюв"}],
+17:[{level:1,move:"Атака крылом"},{level:1,move:"Быстрая атака"},{level:11,move:"Воздушный резак"},{level:15,move:"Ускорение"},{level:19,move:"Контрудар"},{level:23,move:"Сверлящий клюв"}],
+
+// --- Мыши ---
+19:[{level:1,move:"Захват"},{level:3,move:"Быстрая атака"},{level:7,move:"Укус"},{level:11,move:"Гипер клык"},{level:15,move:"Контрудар"},{level:19,move:"Разрушение"}],
+
+// --- Летучие мыши ---
+41:[{level:1,move:"Высасывание жизни"},{level:5,move:"Укус"},{level:9,move:"Атака крылом"},{level:13,move:"Отравленный клык"},{level:17,move:"Поцелуй вампира"},{level:21,move:"Теневой шар"}],
+
+// --- Камни ---
+74:[{level:1,move:"Захват"},{level:5,move:"Бросок камня"},{level:10,move:"Каменная лавина"},{level:15,move:"Землетрясение"},{level:20,move:"Тройной удар"},{level:25,move:"Взрыв"}],
+
+// --- Рыбы ---
+129:[{level:1,move:"Всплеск"},{level:8,move:"Захват"},{level:12,move:"Отчаяние"},{level:16,move:"Разрушение"}],
+130:[{level:1,move:"Укус"},{level:12,move:"Водяной хвост"},{level:18,move:"Гидронасос"},{level:22,move:"Молния"},{level:26,move:"Разрушение"}],
+
+// --- Иви ---
+133:[{level:1,move:"Захват"},{level:5,move:"Быстрая атака"},{level:10,move:"Укус"},{level:15,move:"Взять силой"},{level:20,move:"Контрудар"},{level:25,move:"Мягкая защита"}],
+
+// --- Псайдак ---
+54:[{level:1,move:"Водяной пистолет"},{level:4,move:"Конфузия"},{level:9,move:"Водяной импульс"},{level:14,move:"Психик"},{level:19,move:"Гидронасос"},{level:24,move:"Синтез"}],
+
+// --- Абра ---
+63:[{level:1,move:"Конфузия"},{level:8,move:"Псилуч"},{level:12,move:"Психик"},{level:16,move:"Теневой шар"},{level:20,move:"Гипноз"},{level:24,move:"Отражение"}],
+
+// --- Гастли ---
+92:[{level:1,move:"Лизание"},{level:5,move:"Ночная тень"},{level:10,move:"Теневой шар"},{level:14,move:"Пожиратель снов"},{level:18,move:"Гипноз"},{level:22,move:"Поцелуй вампира"}],
+94:[{level:1,move:"Теневой шар"},{level:1,move:"Пожиратель снов"},{level:1,move:"Психик"},{level:1,move:"Лизание"},{level:1,move:"Гипноз"}],
+
+// --- Лапрас ---
+131:[{level:1,move:"Водяной пистолет"},{level:5,move:"Толчок телом"},{level:10,move:"Ледяной луч"},{level:15,move:"Серфинг"},{level:20,move:"Гидронасос"},{level:25,move:"Ледяной ветер"}],
+
+// --- Дратини ---
+147:[{level:1,move:"Обёртывание"},{level:5,move:"Вихрь"},{level:10,move:"Удар"},{level:16,move:"Ярость"},{level:22,move:"Драконий натиск"}],
+
+// --- Легендарки ---
 150:[{level:1,move:"Психик"},{level:1,move:"Теневой шар"},{level:1,move:"Аура-сфера"},{level:1,move:"Гипер луч"},{level:1,move:"Барьер"}],
 151:[{level:1,move:"Удар"},{level:1,move:"Психик"},{level:1,move:"Теневой шар"},{level:1,move:"Аура-сфера"},{level:1,move:"Синтез"}],
 144:[{level:1,move:"Ледяной луч"},{level:1,move:"Порыв"},{level:1,move:"Пурга"},{level:1,move:"Отдых"},{level:1,move:"Ледяной ветер"}],
-145:[{level:1,move:"Гром"},{level:1,move:"Порыв"},{level:1,move:"Гром"},{level:1,move:"Сверлящий клюв"},{level:1,move:"Разряд молнии"}],
-146:[{level:1,move:"Огнемёт"},{level:1,move:"Порыв"},{level:1,move:"Огненный взрыв"},{level:1,move:"Волна жара"},{level:1,move:"Воля-о-висп"}],
-11:[{level:1,move:"Захват"},{level:1,move:"Укус жука"}],
-17:[{level:1,move:"Атака крылом"},{level:1,move:"Быстрая атака"},{level:1,move:"Воздушный резак"}],
-2:[{level:1,move:"Острый лист"},{level:1,move:"Хлыст лозой"},{level:1,move:"Сонный порошок"},{level:1,move:"Солнечный луч"},{level:1,move:"Ядовитая пыльца"}],
-5:[{level:1,move:"Огнемёт"},{level:1,move:"Огненный клык"},{level:1,move:"Огненный взрыв"},{level:1,move:"Уголёк"},{level:1,move:"Воля-о-висп"}],
-8:[{level:1,move:"Серфинг"},{level:1,move:"Водяной пистолет"},{level:1,move:"Гидронасос"},{level:1,move:"Укус"},{level:1,move:"Мягкая защита"}]
-};
+145:[{level:1,move:"Гром"},{level:1,move:"Порыв"},{level:1,move:"Сверлящий клюв"},{level:1,move:"Разряд молнии"},{level:1,move:"Громовая волна"}],
+146:[{level:1,move:"Огнемёт"},{level:1,move:"Порыв"},{level:1,move:"Огненный взрыв"},{level:1,move:"Волна жара"},{level:1,move:"Воля-о-висп"}]
+,
+143:[
+  {level:1, move:"Захват"},
+  {level:5, move:"Толчок телом"},
+  {level:12, move:"Гипер клык"},
+  {level:18, move:"Землетрясение"},
+  {level:25, move:"Разрушение"},
+  {level:32, move:"Гипер луч"}
+],
+149:[
+  {level:1, move:"Вихрь"},
+  {level:1, move:"Атака крылом"},
+  {level:10, move:"Драконий натиск"},
+  {level:18, move:"Ледяной луч"},
+  {level:25, move:"Гром"},
+  {level:32, move:"Гипер луч"}
+],
+65:[
+  {level:1, move:"Конфузия"},
+  {level:1, move:"Псилуч"},
+  {level:10, move:"Психик"},
+  {level:18, move:"Теневой шар"},
+  {level:25, move:"Отражение"},
+  {level:32, move:"Гипер луч"}
+],
+68:[
+  {level:1, move:"Захват"},
+  {level:5, move:"Контрудар"},
+  {level:10, move:"Взять силой"},
+  {level:16, move:"Бросок камня"},
+  {level:22, move:"Разрушение"},
+  {level:30, move:"Тройной удар"}
+],
+134:[
+  {level:1, move:"Захват"},
+  {level:5, move:"Водяной пистолет"},
+  {level:10, move:"Быстрая атака"},
+  {level:16, move:"Водяной импульс"},
+  {level:22, move:"Ледяной луч"},
+  {level:30, move:"Гидронасос"}
+]
 
+
+
+
+
+
+
+};
 // ===================== АТАКИ =====================
 const FULL_MOVES={
 "Захват":{type:"Обычный",power:40,cat:"physical"},
@@ -2194,7 +2286,105 @@ dratini:`<svg viewBox="0 0 64 64">
   <path d="M22 35 Q24 30 26 32 Q24 34 24 37 Z" fill="#a5f3fc" stroke="#0e7490" stroke-width="0.9"/>
   <!-- Блики -->
   <ellipse cx="14" cy="39" rx="3" ry="1.5" fill="#fff" opacity="0.3"/>
+</svg>`,
+snorlax:`<svg viewBox="0 0 64 64">
+  <ellipse cx="32" cy="58" rx="24" ry="6" fill="rgba(0,0,0,0.3)"/>
+  <ellipse cx="32" cy="42" rx="22" ry="16" fill="#1e3a8a" stroke="#0f172a" stroke-width="1.5"/>
+  <ellipse cx="32" cy="46" rx="16" ry="10" fill="#f5f5dc"/>
+  <circle cx="32" cy="26" r="14" fill="#1e3a8a" stroke="#0f172a" stroke-width="1.5"/>
+  <ellipse cx="32" cy="32" rx="9" ry="6" fill="#f5f5dc"/>
+  <circle cx="26" cy="24" r="4" fill="#fff"/>
+  <circle cx="38" cy="24" r="4" fill="#fff"/>
+  <path d="M22 24 Q26 22 30 24" stroke="#0f172a" stroke-width="1.2" fill="none"/>
+  <path d="M34 24 Q38 22 42 24" stroke="#0f172a" stroke-width="1.2" fill="none"/>
+  <ellipse cx="26" cy="26" rx="1.5" ry="1" fill="#0f172a"/>
+  <ellipse cx="38" cy="26" rx="1.5" ry="1" fill="#0f172a"/>
+  <path d="M26 34 Q32 38 38 34" stroke="#0f172a" stroke-width="1.4" fill="none"/>
+  <ellipse cx="22" cy="54" rx="6" ry="4" fill="#1e3a8a" stroke="#0f172a" stroke-width="1"/>
+  <ellipse cx="42" cy="54" rx="6" ry="4" fill="#1e3a8a" stroke="#0f172a" stroke-width="1"/>
+</svg>`,
+dragonite:`<svg viewBox="0 0 64 64">
+  <path d="M44 44 Q58 40 56 30" stroke="#f97316" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <ellipse cx="22" cy="54" rx="6" ry="4" fill="#fbbf24" stroke="#b45309" stroke-width="1.2"/>
+  <ellipse cx="42" cy="54" rx="6" ry="4" fill="#fbbf24" stroke="#b45309" stroke-width="1.2"/>
+  <ellipse cx="32" cy="42" rx="17" ry="13" fill="#fbbf24" stroke="#b45309" stroke-width="1.5"/>
+  <ellipse cx="32" cy="46" rx="10" ry="7" fill="#fef3c7"/>
+  <path d="M20 34 Q10 30 14 22 Q20 28 24 32 Z" fill="#fbbf24" stroke="#b45309" stroke-width="1.2"/>
+  <path d="M44 34 Q54 30 50 22 Q44 28 40 32 Z" fill="#fbbf24" stroke="#b45309" stroke-width="1.2"/>
+  <circle cx="32" cy="24" r="12" fill="#fbbf24" stroke="#b45309" stroke-width="1.4"/>
+  <path d="M22 16 Q20 8 26 10 Q28 14 28 18 Z" fill="#fff" stroke="#b45309" stroke-width="1"/>
+  <path d="M42 16 Q44 8 38 10 Q36 14 36 18 Z" fill="#fff" stroke="#b45309" stroke-width="1"/>
+  <ellipse cx="27" cy="23" rx="2.5" ry="3" fill="#fff"/>
+  <ellipse cx="37" cy="23" rx="2.5" ry="3" fill="#fff"/>
+  <circle cx="27.5" cy="23.5" r="1.5" fill="#1a1a1a"/>
+  <circle cx="37.5" cy="23.5" r="1.5" fill="#1a1a1a"/>
+  <path d="M28 30 Q32 32 36 30" stroke="#b45309" stroke-width="1.2" fill="none"/>
+</svg>`,
+alakazam:`<svg viewBox="0 0 64 64">
+  <ellipse cx="32" cy="58" rx="16" ry="4" fill="rgba(0,0,0,0.3)"/>
+  <ellipse cx="32" cy="44" rx="11" ry="14" fill="#a16207" stroke="#78350f" stroke-width="1.4"/>
+  <rect x="26" y="34" width="12" height="4" fill="#fbbf24"/>
+  <ellipse cx="32" cy="20" rx="11" ry="10" fill="#fbbf24" stroke="#78350f" stroke-width="1.4"/>
+  <path d="M22 14 Q22 4 32 4 Q42 4 42 14 Q40 8 32 8 Q24 8 22 14 Z" fill="#78350f"/>
+  <path d="M22 20 L14 18 L20 22 Z" fill="#fbbf24" stroke="#78350f" stroke-width="1"/>
+  <path d="M42 20 L50 18 L44 22 Z" fill="#fbbf24" stroke="#78350f" stroke-width="1"/>
+  <ellipse cx="27" cy="19" rx="2" ry="2.5" fill="#1a1a1a"/>
+  <ellipse cx="37" cy="19" rx="2" ry="2.5" fill="#1a1a1a"/>
+  <circle cx="27.5" cy="18.5" r="0.7" fill="#fff"/>
+  <circle cx="37.5" cy="18.5" r="0.7" fill="#fff"/>
+  <path d="M26 25 Q32 28 38 25" stroke="#78350f" stroke-width="1.2" fill="none"/>
+  <rect x="20" y="38" width="4" height="14" rx="2" fill="#fbbf24" stroke="#78350f" stroke-width="1"/>
+  <rect x="40" y="38" width="4" height="14" rx="2" fill="#fbbf24" stroke="#78350f" stroke-width="1"/>
+  <path d="M10 30 L6 34 M10 38 L6 42" stroke="#facc15" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M54 30 L58 34 M54 38 L58 42" stroke="#facc15" stroke-width="1.5" stroke-linecap="round"/>
+</svg>`,
+machamp:`<svg viewBox="0 0 64 64">
+  <ellipse cx="32" cy="58" rx="16" ry="4" fill="rgba(0,0,0,0.3)"/>
+  <ellipse cx="32" cy="44" rx="14" ry="13" fill="#d6d3d1" stroke="#57534e" stroke-width="1.5"/>
+  <rect x="22" y="40" width="20" height="4" fill="#1a1a1a"/>
+  <ellipse cx="14" cy="40" rx="5" ry="8" fill="#d6d3d1" stroke="#57534e" stroke-width="1.2"/>
+  <ellipse cx="50" cy="40" rx="5" ry="8" fill="#d6d3d1" stroke="#57534e" stroke-width="1.2"/>
+  <ellipse cx="20" cy="54" rx="5" ry="4" fill="#d6d3d1" stroke="#57534e" stroke-width="1.2"/>
+  <ellipse cx="44" cy="54" rx="5" ry="4" fill="#d6d3d1" stroke="#57534e" stroke-width="1.2"/>
+  <circle cx="32" cy="24" r="11" fill="#d6d3d1" stroke="#57534e" stroke-width="1.4"/>
+  <path d="M22 18 Q24 12 32 12 Q40 12 42 18" stroke="#1a1a1a" stroke-width="1.5" fill="none"/>
+  <ellipse cx="28" cy="24" rx="2" ry="2.5" fill="#1a1a1a"/>
+  <ellipse cx="36" cy="24" rx="2" ry="2.5" fill="#1a1a1a"/>
+  <circle cx="28.5" cy="23.3" r="0.7" fill="#fff"/>
+  <circle cx="36.5" cy="23.3" r="0.7" fill="#fff"/>
+  <path d="M28 30 Q32 32 36 30" stroke="#57534e" stroke-width="1.2" fill="none"/>
+  <circle cx="20" cy="24" r="3" fill="#fbbf24"/>
+  <circle cx="44" cy="24" r="3" fill="#fbbf24"/>
+</svg>`,
+vaporeon:`<svg viewBox="0 0 64 64">
+  <path d="M46 44 Q58 42 56 32 Q52 38 46 40 Z" fill="#0ea5e9" stroke="#075985" stroke-width="1.3"/>
+  <ellipse cx="22" cy="54" rx="5" ry="3.5" fill="#0ea5e9" stroke="#075985" stroke-width="1.2"/>
+  <ellipse cx="42" cy="54" rx="5" ry="3.5" fill="#0ea5e9" stroke="#075985" stroke-width="1.2"/>
+  <ellipse cx="32" cy="42" rx="16" ry="13" fill="#38bdf8" stroke="#075985" stroke-width="1.4"/>
+  <ellipse cx="32" cy="46" rx="9" ry="7" fill="#bae6fd" opacity="0.8"/>
+  <path d="M28 32 Q28 26 32 26 Q36 26 36 32" fill="#bae6fd" stroke="#075985" stroke-width="1"/>
+  <path d="M26 30 L22 24 L28 28 Z" fill="#0ea5e9" stroke="#075985" stroke-width="1.2"/>
+  <path d="M38 30 L42 24 L36 28 Z" fill="#0ea5e9" stroke="#075985" stroke-width="1.2"/>
+  <ellipse cx="32" cy="26" rx="11" ry="10" fill="#38bdf8" stroke="#075985" stroke-width="1.4"/>
+  <path d="M23 20 L18 10 L26 18 Z" fill="#38bdf8" stroke="#075985" stroke-width="1.2"/>
+  <path d="M41 20 L46 10 L38 18 Z" fill="#38bdf8" stroke="#075985" stroke-width="1.2"/>
+  <ellipse cx="27" cy="26" rx="2.5" ry="3" fill="#1a1a1a"/>
+  <ellipse cx="37" cy="26" rx="2.5" ry="3" fill="#1a1a1a"/>
+  <circle cx="27.5" cy="25.3" r="0.8" fill="#fff"/>
+  <circle cx="37.5" cy="25.3" r="0.8" fill="#fff"/>
+  <ellipse cx="32" cy="31" rx="1.2" ry="0.9" fill="#075985"/>
+  <path d="M28 33 Q32 35 36 33" stroke="#075985" stroke-width="1.2" fill="none"/>
+  <path d="M22 30 Q20 28 22 26 M42 30 Q44 28 42 26" stroke="#bae6fd" stroke-width="1.5" fill="none"/>
 </svg>`
+
+
+
+
+
+
+
+
+
 
 };
 function getSprite(s){return SPRITES[s]||SPRITES.pikachu}
@@ -2212,7 +2402,7 @@ const ITEMS={
 let inventory={pokeball:10,potion:5,superball:0,ultraball:0,superpotion:0,revive:1,antidote:0};
 
 // ===================== ПРОГРЕССИЯ =====================
-const ZONE_ORDER=["pallet","viridian","route","forest","pewter","mountain","cerulean","vermilion","celadon","saffron","lavender","cave","fuchsia","desert","cinnabar","volcano","indigo"];
+const ZONE_ORDER=["pallet","viridian","route","forest","pewter","mountain","cerulean","vermilion","celadon","saffron","lavender","cave","fuchsia","desert","cinnabar","seafoam", "volcano","indigo"];
 const DEFAULT_UNLOCK={type:"defeat",count:3};
 let unlockedZones=new Set(["pallet"]);
 let zoneProgress={};
@@ -2535,7 +2725,7 @@ function updateHUD(){
       if(nextBiome&&!unlockedZones.has(nextBiome)){
         const prog=zoneProgress[biome]||{defeated:0};
         progEl.textContent=`${prog.defeated||0}/${DEFAULT_UNLOCK.count}`;
-      }else progEl.textContent="✔";
+      }else progEl.textContent="✓";
     }else{zoneEl.textContent="—";progEl.textContent="—"}
   }
   const badgesEl=document.getElementById('badges');
@@ -2652,7 +2842,8 @@ const ZONE_CONFIG={
   desert:    {levels:[22,26], rarities:{common:1,  uncommon:3, rare:8, epic:5}},
   cinnabar:  {levels:[24,28], rarities:{common:1,  uncommon:2, rare:7, epic:6, legendary:1}},
   volcano:   {levels:[26,30], rarities:{common:0,  uncommon:2, rare:6, epic:7, legendary:1}},
-  indigo:    {levels:[30,35], rarities:{common:0,  uncommon:1, rare:5, epic:8, legendary:2}}
+  indigo:    {levels:[30,35], rarities:{common:0,  uncommon:1, rare:5, epic:8, legendary:2}},
+seafoam: {levels:[26,30], rarities:{common:1, uncommon:3, rare:6, epic:5, legendary:1}}
 };
 
 function getZoneLevels(biome){
@@ -4750,8 +4941,12 @@ function openTeamScreen(){
   if(playerTeam.length===0){showToast("У тебя пока нет покемонов!");return}
   renderTeamScreen();
   document.getElementById('teamScreen').classList.add('active');
+  hideMenuButtons();
 }
-function closeTeamScreen(){document.getElementById('teamScreen').classList.remove('active')}
+function closeTeamScreen(){
+  document.getElementById('teamScreen').classList.remove('active');
+  showMenuButtons();
+}
 function renderTeamScreen(){
   const list=document.getElementById('teamList');
   list.innerHTML='';
@@ -5010,8 +5205,12 @@ function claimQuestReward(id){
 function openQuestScreen(){
   renderQuestScreen();
   document.getElementById('questScreen').classList.add('active');
+  hideMenuButtons();
 }
-function closeQuestScreen(){document.getElementById('questScreen').classList.remove('active')}
+function closeQuestScreen(){
+  document.getElementById('questScreen').classList.remove('active');
+  showMenuButtons();
+}
 function renderQuestScreen(){
   const list=document.getElementById('questList');
   list.innerHTML='';
@@ -5957,7 +6156,7 @@ function gamePrompt(text, defaultValue, opts){
     // Enter — ОК, Esc — отмена
     input.onkeydown = e=>{
       if(e.key === 'Enter'){ e.preventDefault(); ok.click(); }
-      else if(e.key === 'Escape'){ e.preventDefault(); cancel.click(); }
+      else if(e.key === 'Escape'){  e.preventDefault(); cancel.click(); }
     };
 
     modal.classList.add('active');
@@ -5975,11 +6174,15 @@ function calculateHealCost(){
 }
 function openPokecenter(){
   if(playerTeam.length===0){showToast("У тебя нет покемонов!");return}
-  closeAllScreens();    
- renderPokecenter();
+  closeAllScreens();
+  renderPokecenter();
   document.getElementById('pokecenterScreen').classList.add('active');
+  hideMenuButtons();
 }
-function closePokecenter(){document.getElementById('pokecenterScreen').classList.remove('active')}
+function closePokecenter(){
+  document.getElementById('pokecenterScreen').classList.remove('active');
+  showMenuButtons();
+}
 function renderPokecenter(){
   const team=document.getElementById('pcTeam');
   team.innerHTML='';
@@ -6009,8 +6212,15 @@ function renderPokecenter(){
 }
 
 // ===================== МАГАЗИН =====================
-function openShop(){renderShop();document.getElementById('shopScreen').classList.add('active')}
-function closeShop(){document.getElementById('shopScreen').classList.remove('active')}
+function openShop(){
+  renderShop();
+  document.getElementById('shopScreen').classList.add('active');
+  hideMenuButtons();
+}
+function closeShop(){
+  document.getElementById('shopScreen').classList.remove('active');
+  showMenuButtons();
+}
 function renderShop(){
   document.getElementById('shopMoney').textContent=`💰 У вас: ${playerMoney} монет`;
   const items=document.getElementById('shopItems');
@@ -6035,8 +6245,15 @@ function renderShop(){
 }
 
 // ===================== ИНВЕНТАРЬ =====================
-function openInventory(){renderInventory();document.getElementById('inventoryScreen').classList.add('active')}
-function closeInventory(){document.getElementById('inventoryScreen').classList.remove('active')}
+function openInventory(){
+  renderInventory();
+  document.getElementById('inventoryScreen').classList.add('active');
+  hideMenuButtons();
+}
+function closeInventory(){
+  document.getElementById('inventoryScreen').classList.remove('active');
+  showMenuButtons();
+}
 function renderInventory(){
   const items=document.getElementById('invItems');
   items.innerHTML='';
