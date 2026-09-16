@@ -2,6 +2,9 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <title>Мир Покемонов — Канто</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -598,7 +601,22 @@ html,body{font-family:'Segoe UI',sans-serif;background:#0a0e1a;overflow:hidden;c
 }
 .gm-btn.danger:hover { box-shadow: 0 6px 0 #7f1d1d; }
 
-
+html,body{
+  font-family:'Segoe UI',sans-serif;
+  background:#0a0e1a;
+  overflow:hidden;
+  height:100%;
+  width:100%;
+  position:fixed;
+  top:0; left:0; right:0; bottom:0;
+  color:#fff;
+  user-select:none;
+  -webkit-user-select:none;
+  overscroll-behavior:none;
+  touch-action:none;              /* ← запрет pinch-zoom и тач-скролла */
+  -webkit-text-size-adjust:100%;  /* ← запрет авто-масштаба текста */
+  text-size-adjust:100%;
+}
 </style>
 </head>
 <body>
@@ -5998,6 +6016,87 @@ console.log('🎮 Мир Покемонов — Канто загружен!');
 console.log('📋 Зон: '+ZONE_ORDER.length+', Покемонов на карте: '+pokemonsOnMap.length);
 console.log('🔒 Открыто зон: '+unlockedZones.size);
 console.log('📜 Квестов: '+QUEST_DEFS.length);
+
+// ===================== ЗАПРЕТ ЗУМА =====================
+(function blockZoom(){
+  // --- 1. Ctrl + колесо мыши ---
+  window.addEventListener('wheel', e => {
+    if (e.ctrlKey || e.metaKey) {
+      e.preventDefault();
+      return false;
+    }
+  }, { passive: false });
+
+  // --- 2. Ctrl / Cmd + '+' / '-' / '=' / '0' ---
+  window.addEventListener('keydown', e => {
+    if (!(e.ctrlKey || e.metaKey)) return;
+    const zoomKeys = ['+', '=', '-', '_', '0', 'Add', 'Subtract', 'NumpadAdd', 'NumpadSubtract'];
+    if (zoomKeys.includes(e.key)) {
+      e.preventDefault();
+      return false;
+    }
+  }, { passive: false });
+
+  // --- 3. Pinch-zoom на тач-устройствах ---
+  //     (два пальца на экране → блокируем жест)
+  document.addEventListener('touchstart', e => {
+    if (e.touches.length > 1) {
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  document.addEventListener('touchmove', e => {
+    if (e.touches.length > 1) {
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  // --- 4. Двойной тап (быстрое приближение на мобильных) ---
+  let lastTap = 0;
+  document.addEventListener('touchend', e => {
+    const now = Date.now();
+    if (now - lastTap < 300) {
+      e.preventDefault();   // блокируем «второй тап»
+    }
+    lastTap = now;
+  }, { passive: false });
+
+  // --- 5. Жесты трекпада (Safari / macOS) ---
+  ['gesturestart', 'gesturechange', 'gestureend'].forEach(evt => {
+    document.addEventListener(evt, e => e.preventDefault(), { passive: false });
+  });
+
+  // --- 6. Дополнительная защита: dblclick на пустой области ---
+  window.addEventListener('dblclick', e => {
+    // Разрешаем dblclick на кнопках/полях (там он может быть нужен),
+    // но блокируем на игровом поле
+    const tag = (e.target.tagName || '').toLowerCase();
+    if (tag === 'input' || tag === 'textarea') return;
+    e.preventDefault();
+  }, { passive: false });
+
+  // --- 7. Слежение за scale (Safari иногда игнорирует meta) ---
+  //     Если пользователь всё же умудрился изменить масштаб — сбрасываем.
+  //     Работает через visualViewport (поддерживается в современных браузерах).
+  if (window.visualViewport) {
+    const resetZoom = () => {
+      if (window.visualViewport.scale > 1.01) {
+        // К сожалению, программно сбросить scale нельзя.
+        // Но можно предотвратить дальнейший рост через touch-события выше.
+      }
+    };
+    window.visualViewport.addEventListener('resize', resetZoom);
+  }
+})();
+
+
+
+
+
+
+
+
+
 
 }); // конец DOMContentLoaded
 </script>
