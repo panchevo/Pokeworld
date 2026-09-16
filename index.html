@@ -414,6 +414,191 @@ html,body{font-family:'Segoe UI',sans-serif;background:#0a0e1a;overflow:hidden;c
 .npc-quest {
   z-index: 900000 !important;
 }
+
+/* ===== ОКНО ПАУЗЫ ===== */
+#pauseScreen {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;                    /* выше всего игрового мира, ниже диалогов */
+  background: rgba(5, 10, 20, 0.85);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+#pauseScreen.active { display: flex; }
+
+.pause-device {
+  width: 420px;
+  max-width: 92vw;
+  background: linear-gradient(160deg, #1a2a4a, #0a1628);
+  border: 3px solid #3a6b8a;
+  border-radius: 24px;
+  padding: 28px 26px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,.75),
+              inset 0 0 0 3px rgba(255,255,255,.08);
+  animation: pausePop .18s ease-out;
+}
+@keyframes pausePop {
+  from { transform: scale(0.92); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+.pause-logo { font-size: 44px; margin-bottom: 6px; }
+.pause-device h2 {
+  color: #ffcb05;
+  font-size: 30px;
+  text-shadow: 2px 2px 0 #2a5aa8;
+  margin-bottom: 4px;
+}
+.pause-sub {
+  color: #b8d4e8;
+  font-size: 13px;
+  margin-bottom: 22px;
+}
+.pause-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.pause-btn {
+  width: 100%;
+  padding: 14px 18px;
+  border: none;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  transition: transform .12s, box-shadow .12s;
+}
+.pause-btn:active { transform: translateY(2px); }
+.pause-btn.resume {
+  background: #ffcb05;
+  color: #2a5aa8;
+  box-shadow: 0 4px 0 #c9a004;
+}
+.pause-btn.resume:hover { box-shadow: 0 6px 0 #c9a004; }
+.pause-btn.restart {
+  background: linear-gradient(180deg, #ef4444, #b91c1c);
+  color: #fff;
+  box-shadow: 0 4px 0 #7f1d1d;
+}
+.pause-btn.restart:hover { box-shadow: 0 6px 0 #7f1d1d; }
+.pause-hint {
+  color: #94a3b8;
+  font-size: 12px;
+}
+.pause-hint b { color: #ffcb05; }
+
+/* ===== УНИВЕРСАЛЬНОЕ ИГРОВОЕ ОКНО (alert / confirm / prompt) ===== */
+#gameModal {
+  position: fixed;
+  inset: 0;
+  z-index: 100001;              /* выше паузы (100000), ниже toast (3000 не хватит) */
+  background: rgba(5, 10, 20, 0.85);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+#gameModal.active { display: flex; }
+
+.gm-device {
+  width: 440px;
+  max-width: 92vw;
+  background: linear-gradient(160deg, #1a2a4a, #0a1628);
+  border: 3px solid #ffcb05;
+  border-radius: 22px;
+  padding: 26px 24px 20px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,.8),
+              inset 0 0 0 3px rgba(255,255,255,.08);
+  animation: gmPop .18s ease-out;
+}
+@keyframes gmPop {
+  from { transform: scale(0.92); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+.gm-icon {
+  font-size: 40px;
+  margin-bottom: 6px;
+  filter: drop-shadow(0 0 8px rgba(255,203,5,.6));
+}
+.gm-device h2 {
+  color: #ffcb05;
+  font-size: 22px;
+  text-shadow: 2px 2px 0 #2a5aa8;
+  margin-bottom: 10px;
+}
+.gm-text {
+  color: #e2e8f0;
+  font-size: 15px;
+  line-height: 1.5;
+  margin-bottom: 18px;
+  white-space: pre-wrap;        /* сохраняем \n */
+}
+.gm-input-wrap { margin-bottom: 16px; }
+.gm-input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 2px solid #3a6b8a;
+  background: rgba(0,0,0,.35);
+  color: #fff;
+  font-size: 15px;
+  outline: none;
+  transition: border-color .15s;
+}
+.gm-input:focus { border-color: #ffcb05; }
+
+.gm-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.gm-btn {
+  flex: 1 1 120px;
+  min-width: 110px;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+  transition: transform .12s, box-shadow .12s;
+}
+.gm-btn:active { transform: translateY(2px); }
+
+.gm-btn.ok {
+  background: #ffcb05;
+  color: #2a5aa8;
+  box-shadow: 0 4px 0 #c9a004;
+}
+.gm-btn.ok:hover { box-shadow: 0 6px 0 #c9a004; }
+
+.gm-btn.cancel {
+  background: linear-gradient(180deg, #6b7280, #374151);
+  color: #fff;
+  box-shadow: 0 4px 0 #1f2937;
+}
+.gm-btn.cancel:hover { box-shadow: 0 6px 0 #1f2937; }
+
+.gm-btn.danger {
+  background: linear-gradient(180deg, #ef4444, #b91c1c);
+  color: #fff;
+  box-shadow: 0 4px 0 #7f1d1d;
+}
+.gm-btn.danger:hover { box-shadow: 0 6px 0 #7f1d1d; }
+
+
 </style>
 </head>
 <body>
@@ -554,6 +739,34 @@ html,body{font-family:'Segoe UI',sans-serif;background:#0a0e1a;overflow:hidden;c
     <div class="evolve-sprite" id="evolveTo"></div>
   </div>
 </div>
+<audio id="bgMusic" src="music.mp3" loop preload="auto"></audio>
+
+<div id="pauseScreen">
+  <div class="pause-device">
+    <div class="pause-logo">🎮</div>
+    <h2>Пауза</h2>
+    <div class="pause-sub">Мир Покемонов — Канто</div>
+    <div class="pause-buttons">
+      <button class="pause-btn resume" id="pauseResumeBtn">▶️ Продолжить</button>
+      <button class="pause-btn restart" id="pauseRestartBtn">🔄 Начать заново</button>
+    </div>
+    <div class="pause-hint">Нажми <b>ESC</b>, чтобы открыть/закрыть паузу</div>
+  </div>
+</div>
+
+
+<!-- ===== УНИВЕРСАЛЬНОЕ ИГРОВОЕ ОКНО ===== -->
+<div id="gameModal">
+  <div class="gm-device">
+    <div class="gm-icon" id="gmIcon">❓</div>
+    <h2 id="gmTitle">Заголовок</h2>
+    <div class="gm-text" id="gmText">Текст сообщения</div>
+    <div class="gm-input-wrap" id="gmInputWrap" style="display:none">
+      <input type="text" id="gmInput" class="gm-input" autocomplete="off">
+    </div>
+    <div class="gm-buttons" id="gmButtons"></div>
+  </div>
+</div>
 
 <div id="toast"></div>
 
@@ -651,6 +864,95 @@ const TYPE_CHART={
 Сталь:{Огонь:0.5,Вода:0.5,Электрик:0.5,Лёд:2,Камень:2,Сталь:0.5,Фея:2},
 Фея:{Огонь:0.5,Боевой:2,Яд:0.5,Дракон:2,Тёмный:2,Сталь:0.5}
 };
+
+
+
+
+
+
+
+
+
+// ===================== ПАУЗА =====================
+let gamePaused = false;
+
+function openPause(){
+  if(gamePaused) return;
+  gamePaused = true;
+  document.getElementById('pauseScreen').classList.add('active');
+  updateMusic();   // остановит музыку
+}
+
+function closePause(){
+  if(!gamePaused) return;
+  gamePaused = false;
+  document.getElementById('pauseScreen').classList.remove('active');
+  updateMusic();   // возобновит музыку, если стартовик выбран
+}
+
+// Кнопки
+document.getElementById('pauseResumeBtn').addEventListener('click', closePause);
+document.getElementById('pauseRestartBtn').addEventListener('click', async ()=>{
+  const yes = await gameConfirm(
+    'Начать заново?\nВесь прогресс будет удалён.',
+    {
+      title: 'Новая игра',
+      icon: '⚠️',
+      okText: 'Начать',
+      cancelText: 'Отмена',
+      danger: true
+    }
+  );
+  if(!yes) return;
+  try { localStorage.removeItem('pokeworld_save'); } catch(e){}
+  location.reload();
+});
+// ESC — открыть/закрыть паузу.
+// ВАЖНО: этот обработчик должен перехватывать ESC раньше,
+// чем уже существующий keydown (тот, что закрывает экраны).
+window.addEventListener('keydown', e => {
+  if(e.key !== 'Escape') return;
+
+  // Если открыто какое-то модальное окно — пусть работает старый обработчик
+  const anyModalOpen =
+    document.querySelector('#pokedex.active') ||
+    document.querySelector('#teamScreen.active') ||
+    document.querySelector('#myPokemonDetail.active') ||
+    document.querySelector('#pokecenterScreen.active') ||
+    document.querySelector('#shopScreen.active') ||
+    document.querySelector('#inventoryScreen.active') ||
+    document.querySelector('#questScreen.active') ||
+    document.querySelector('#dialogScreen.active') ||
+    document.querySelector('#evolveScreen.active') ||
+    document.querySelector('#battleScreen.active');
+
+  if(anyModalOpen){
+    // закроем всё и вернёмся в игру, но паузу не открываем
+    closeAllScreens();
+    return;
+  }
+
+  // Иначе — переключаем паузу
+  if(gamePaused) closePause();
+  else           openPause();
+}, true);   // ← capture:true — сработает раньше старого обработчика
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function getTypeEff(moveType,defTypes){
   let m=1;
   defTypes.forEach(t=>{const c=TYPE_CHART[moveType];if(c&&c[t]!==undefined)m*=c[t]});
@@ -4351,6 +4653,47 @@ function chooseStarter(id){
   updateHUD();
   saveProgress();
   showToast(`Ты выбрал ${data.name}!`);
+
+  // ✅ Стартовик выбран — теперь музыка может играть (если не пауза)
+  starterChosen = true;
+  updateMusic();
+
+  openPause();   // пауза сама остановит музыку через updateMusic()
+}
+
+// ===================== ФОНОВАЯ МУЗЫКА =====================
+// ===================== ФОНОВАЯ МУЗЫКА =====================
+// Музыка играет только когда: выбран стартовик И игра не на паузе.
+let starterChosen = false;
+
+function updateMusic(){
+  const music = document.getElementById('bgMusic');
+  if(!music) return;
+
+  const shouldPlay = starterChosen && !gamePaused;
+
+  if(shouldPlay){
+    if(music.paused){
+      music.volume = 0.5;
+      music.loop = true;
+      const p = music.play();
+      if(p && p.catch){
+        p.catch(err => {
+          console.warn('Не удалось запустить музыку:', err);
+          // Браузер блокирует autoplay — попробуем после первого клика
+          const resume = () => {
+            if(starterChosen && !gamePaused){
+              music.play().catch(()=>{});
+            }
+            document.removeEventListener('click', resume);
+          };
+          document.addEventListener('click', resume, { once: true });
+        });
+      }
+    }
+  } else {
+    if(!music.paused) music.pause();
+  }
 }
 
 // ===================== РАЗБЛОКИРОВКА ЗОН =====================
@@ -5208,15 +5551,42 @@ function attemptCatch(){
       setTimeout(()=>{battleState.busy=false;enemyTurn()},1000);
     }
   },1200);
-}
-function openBattleItems(){
+}function openBattleItems(){
   if(battleState.busy||battleState.turn!=='player')return;
   const items=Object.keys(inventory).filter(k=>inventory[k]>0&&ITEMS[k]);
-  if(!items.length){showToast("Инвентарь пуст!");return}
-  const choice=prompt("Выбери предмет (введи номер):\n"+items.map((k,i)=>`${i+1}. ${ITEMS[k].name} x${inventory[k]}`).join("\n"));
-  const idx=parseInt(choice)-1;
-  if(isNaN(idx)||idx<0||idx>=items.length)return;
-  useBattleItem(items[idx]);
+  if(!items.length){ showToast("Инвентарь пуст!"); return; }
+
+  // Собираем окно с кнопками-предметами
+  const modal = document.getElementById('gameModal');
+  document.getElementById('gmIcon').textContent  = '🎒';
+  document.getElementById('gmTitle').textContent = 'Использовать предмет';
+  document.getElementById('gmText').textContent  =
+    'У тебя осталось: ' + items.map(k=>`${ITEMS[k].icon}${inventory[k]}`).join('  ');
+  document.getElementById('gmInputWrap').style.display = 'none';
+
+  const btns = document.getElementById('gmButtons');
+  btns.innerHTML = '';
+
+  // Кнопка "Отмена"
+  const cancel = document.createElement('button');
+  cancel.className = 'gm-btn cancel';
+  cancel.textContent = 'Отмена';
+  cancel.onclick = ()=> closeGameModal();
+  btns.appendChild(cancel);
+
+  // Кнопки предметов
+  items.forEach(k=>{
+    const b = document.createElement('button');
+    b.className = 'gm-btn ok';
+    b.textContent = `${ITEMS[k].icon} ${ITEMS[k].name} ×${inventory[k]}`;
+    b.onclick = ()=>{
+      closeGameModal();
+      useBattleItem(k);
+    };
+    btns.appendChild(b);
+  });
+
+  modal.classList.add('active');
 }
 function useBattleItem(key){
   const player=playerTeam[battleState.playerIndex];
@@ -5291,6 +5661,111 @@ document.querySelector('.dialog-box').addEventListener('click',()=>{
   document.getElementById('dialogScreen').classList.remove('active');
   if(dialogCallback){const cb=dialogCallback;dialogCallback=null;cb()}
 });
+
+
+// ===================== ИГРОВОЕ ОКНО (замена alert/confirm/prompt) =====================
+function closeGameModal(){
+  document.getElementById('gameModal').classList.remove('active');
+  document.getElementById('gmInputWrap').style.display = 'none';
+  document.getElementById('gmInput').value = '';
+}
+
+// alert → Promise<void>
+function gameAlert(text, opts){
+  opts = opts || {};
+  return new Promise(resolve=>{
+    const modal = document.getElementById('gameModal');
+    document.getElementById('gmIcon').textContent  = opts.icon  || 'ℹ️';
+    document.getElementById('gmTitle').textContent = opts.title || 'Сообщение';
+    document.getElementById('gmText').textContent  = text;
+    document.getElementById('gmInputWrap').style.display = 'none';
+
+    const btns = document.getElementById('gmButtons');
+    btns.innerHTML = '';
+    const ok = document.createElement('button');
+    ok.className = 'gm-btn ok';
+    ok.textContent = opts.okText || 'ОК';
+    ok.onclick = ()=>{ closeGameModal(); resolve(); };
+    btns.appendChild(ok);
+
+    modal.classList.add('active');
+    setTimeout(()=>ok.focus(), 50);
+  });
+}
+
+// confirm → Promise<boolean>
+function gameConfirm(text, opts){
+  opts = opts || {};
+  return new Promise(resolve=>{
+    const modal = document.getElementById('gameModal');
+    document.getElementById('gmIcon').textContent  = opts.icon  || '❓';
+    document.getElementById('gmTitle').textContent = opts.title || 'Подтверждение';
+    document.getElementById('gmText').textContent  = text;
+    document.getElementById('gmInputWrap').style.display = 'none';
+
+    const btns = document.getElementById('gmButtons');
+    btns.innerHTML = '';
+
+    const cancel = document.createElement('button');
+    cancel.className = 'gm-btn cancel';
+    cancel.textContent = opts.cancelText || 'Отмена';
+    cancel.onclick = ()=>{ closeGameModal(); resolve(false); };
+
+    const ok = document.createElement('button');
+    ok.className = 'gm-btn ' + (opts.danger ? 'danger' : 'ok');
+    ok.textContent = opts.okText || 'Да';
+    ok.onclick = ()=>{ closeGameModal(); resolve(true); };
+
+    btns.appendChild(cancel);
+    btns.appendChild(ok);
+
+    modal.classList.add('active');
+    setTimeout(()=>ok.focus(), 50);
+  });
+}
+
+// prompt → Promise<string|null>
+function gamePrompt(text, defaultValue, opts){
+  opts = opts || {};
+  return new Promise(resolve=>{
+    const modal = document.getElementById('gameModal');
+    document.getElementById('gmIcon').textContent  = opts.icon  || '✏️';
+    document.getElementById('gmTitle').textContent = opts.title || 'Ввод';
+    document.getElementById('gmText').textContent  = text;
+
+    const wrap = document.getElementById('gmInputWrap');
+    const input = document.getElementById('gmInput');
+    wrap.style.display = 'block';
+    input.value = defaultValue || '';
+    input.type = opts.password ? 'password' : 'text';
+
+    const btns = document.getElementById('gmButtons');
+    btns.innerHTML = '';
+
+    const cancel = document.createElement('button');
+    cancel.className = 'gm-btn cancel';
+    cancel.textContent = opts.cancelText || 'Отмена';
+    cancel.onclick = ()=>{ closeGameModal(); resolve(null); };
+
+    const ok = document.createElement('button');
+    ok.className = 'gm-btn ok';
+    ok.textContent = opts.okText || 'ОК';
+    ok.onclick = ()=>{ const v = input.value; closeGameModal(); resolve(v); };
+
+    btns.appendChild(cancel);
+    btns.appendChild(ok);
+
+    // Enter — ОК, Esc — отмена
+    input.onkeydown = e=>{
+      if(e.key === 'Enter'){ e.preventDefault(); ok.click(); }
+      else if(e.key === 'Escape'){ e.preventDefault(); cancel.click(); }
+    };
+
+    modal.classList.add('active');
+    setTimeout(()=>{ input.focus(); input.select(); }, 50);
+  });
+}
+
 
 // ===================== ЦЕНТР ПОКЕМОНОВ =====================
 function calculateHealCost(){
@@ -5379,8 +5854,10 @@ function renderInventory(){
 
 // ===================== ИНИЦИАЛИЗАЦИЯ =====================
 function initGame(){
-  const loaded=loadProgress();
-  if(!loaded||playerTeam.length===0){
+
+ const loaded=loadProgress();
+  const hasTeam = playerTeam.length > 0;
+  if(!loaded || !hasTeam){
     showStarterScreen();
   } else {
     document.getElementById('starterScreen').classList.add('hidden');
@@ -5400,10 +5877,34 @@ spawnHouses();
     camX=-(650-window.innerWidth/2);
     camY=-(1650-window.innerHeight/2);
   }
+
+
+if(!loaded || !hasTeam){
+    showStarterScreen();
+    starterChosen = false;
+  } else {
+    document.getElementById('starterScreen').classList.add('hidden');
+    starterChosen = true;   // команда уже есть — считаем, что стартовик выбран
+  }
+
+
+
+
   applyCam();
   updateHUD();
   updateQuestMarkers();
-  if(!animStarted){animStarted=true;requestAnimationFrame(animate)}
+   if(!animStarted){animStarted=true;requestAnimationFrame(animate)}
+  if(hasTeam){
+    setTimeout(()=>{
+      openPause();      // пауза сама остановит музыку
+      updateMusic();    // на случай, если браузер разрешил autoplay
+    }, 100);
+  } else {
+    updateMusic();      // стартовик не выбран — музыка не играет
+  }
+
+
+
 }
 
 // Глобальные функции для inline onclick
