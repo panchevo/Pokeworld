@@ -373,15 +373,19 @@ html,body{font-family:'Segoe UI',sans-serif;background:#0a0e1a;overflow:hidden;c
   box-shadow: 0 0 8px rgba(168,85,247,.8);
 }
 
-.npc-quest .qmark {
+.npc-quest {
   position: absolute;
-  top: -8px;
-  right: -8px;
-  font-size: 22px;
-  filter: drop-shadow(0 0 4px #fbbf24);
-  animation: qmarkBounce 1s infinite;
-  z-index: 999999 !important;   /* ← поверх всего */
-  pointer-events: none;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  will-change: transform;
+  top: 0;
+  left: 0;
+  margin-left: -30px;
+  margin-top: -30px;
 }
 
 .npc-quest .label {
@@ -617,6 +621,31 @@ html,body{
   -webkit-text-size-adjust:100%;  /* ← запрет авто-масштаба текста */
   text-size-adjust:100%;
 }
+
+/* === Слой значков квестов — выше подписей и NPC, но ниже названий городов === */
+#questMarks {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3000px;
+  height: 2000px;
+  pointer-events: none;
+  z-index: 500000000;       /* между #labels (950000) и #top (501111110) */
+}
+
+#questMarks .qmark {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-size: 22px;
+  font-weight: bold;
+  pointer-events: none;
+  filter: drop-shadow(0 0 4px #fbbf24);
+  animation: qmarkBounce 1s infinite;
+  line-height: 1;
+  white-space: nowrap;
+}
+#top{position:absolute;top:0;left:0;width:3000px;height:2000px;display:block;pointer-events:none;z-index:900000}
+
 </style>
 </head>
 <body>
@@ -632,6 +661,7 @@ html,body{
   <canvas id="fog" width="3000" height="2000"></canvas>
   <canvas id="top" width="3000" height="2000"></canvas>
 <div id="labels"></div>
+ <div id="questMarks"></div>
 </div></div>
 <div id="biomeName"></div>
 
@@ -2998,11 +3028,8 @@ function spawnQuestNPCs(){
     el.dataset.biome = q.biome;
 
     // SVG по типу NPC + восклицательный знак
-    const svg = pickNpcSvg(q.npc);
-    el.innerHTML = `
-      ${svg}
-      <div class="qmark" id="qmark_${q.id}">❗</div>
-    `;
+   const svg = pickNpcSvg(q.npc);
+el.innerHTML = svg;
 
     // Подпись с именем
    // Подпись кладём в отдельный слой, чтобы она была поверх зданий
@@ -3059,6 +3086,19 @@ el._labelEl = label;
 
     // Добавляем в мир
         world.appendChild(el);
+
+
+// === Значок квеста — в отдельном слое ===
+const qmark = document.createElement('div');
+qmark.className = 'qmark new';
+qmark.id = 'qmark_' + q.id;
+qmark.textContent = '❗';
+qmark.style.left = spawnX + 'px';
+qmark.style.top  = (spawnY - 34) + 'px';
+qmark.style.display = unlockedZones.has(q.biome) ? 'block' : 'none';
+document.getElementById('questMarks').appendChild(qmark);
+
+
     // NPC с квестом — всегда поверх зданий, тренеров и покемонов,
     // чтобы значки ❗ / ✅ / … / ✓ были видны
     el.style.zIndex = 900000;
@@ -3080,16 +3120,28 @@ el._labelEl = label;
   updateQuestMarkers();
 
   console.log(`📜 Заспавнено NPC с квестами: ${npcQuestRefs.length}`);
-}
-function updateQuestMarkers(){
+}function updateQuestMarkers(){
   QUEST_DEFS.forEach(q=>{
-    const mark=document.getElementById('qmark_'+q.id);
-    if(!mark)return;
-    const st=activeQuests[q.id];
-    if(st&&st.claimed){mark.textContent='✓';mark.style.filter='drop-shadow(0 0 4px #4ade80)';mark.style.color='#4ade80'}
-    else if(st&&st.completed){mark.textContent='✅';mark.style.filter='drop-shadow(0 0 4px #4ade80)'}
-    else if(st){mark.textContent='…';mark.style.filter='drop-shadow(0 0 4px #fbbf24)'}
-    else{mark.textContent='❗';mark.style.filter='drop-shadow(0 0 4px #fbbf24)'}
+    const mark = document.getElementById('qmark_' + q.id);
+    if(!mark) return;
+    const st = activeQuests[q.id];
+
+    mark.style.color = '';
+
+    if(st && st.claimed){
+      mark.textContent = '✓';
+      mark.style.filter = 'drop-shadow(0 0 4px #4ade80)';
+      mark.style.color = '#4ade80';
+    } else if(st && st.completed){
+      mark.textContent = '✅';
+      mark.style.filter = 'drop-shadow(0 0 4px #4ade80)';
+    } else if(st){
+      mark.textContent = '…';
+      mark.style.filter = 'drop-shadow(0 0 4px #fbbf24)';
+    } else {
+      mark.textContent = '❗';
+      mark.style.filter = 'drop-shadow(0 0 4px #fbbf24)';
+    }
   });
 }
 
