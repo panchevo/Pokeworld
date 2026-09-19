@@ -3416,36 +3416,36 @@ function houseSVG(wall, roof){
     <circle cx="34" cy="51" r="0.8" fill="#fbbf24"/>
   </svg>`;
 }
-
 function spawnHouses(){
   // Удаляем старые
   houseEls.forEach(el => { if(el.parentNode) el.parentNode.removeChild(el); });
   houseEls = [];
 
   housesToSpawn.forEach(h => {
+    // === НОВОЕ: определяем биом по координатам дома ===
+    const cx = h.x + h.w/2;
+    const cy = h.y + h.h/2;
+    const biome = getZoneBiomeAt(cx, cy);
+
+    // === НОВОЕ: пропускаем дома в закрытых зонах ===
+    if(biome && !unlockedZones.has(biome)) return;
+
     const el = document.createElement('div');
     el.className = 'building';
-    // Размер пропорционален дому (примерно ×1.4, чтобы SVG смотрелся нормально)
     const dw = h.w * 1.4 + 8;
     const dh = h.h * 1.4 + 14;
     el.style.width  = dw + 'px';
     el.style.height = dh + 'px';
     el.style.marginLeft = (-dw/2) + 'px';
     el.style.marginTop  = (-dh/2) + 'px';
-    el.style.pointerEvents = 'none';  // по домам не кликаем
+    el.style.pointerEvents = 'none';
     el.innerHTML = houseSVG(h.wall, h.roof);
-
-    // Центр дома по X, центр по Y
-    const cx = h.x + h.w/2;
-    const cy = h.y + h.h/2;
     el.style.transform = `translate(${cx}px,${cy}px)`;
-
-el.style.zIndex = yToZ(cy + dh / 2);   // всегда под покемонами
+    el.style.zIndex = yToZ(cy + dh / 2);
     world.appendChild(el);
     houseEls.push(el);
   });
 }
-
 
 function drawBackground(){
   housesToSpawn.length = 0;  
@@ -5082,20 +5082,37 @@ function updateMusic(){
   } else {
     if(!music.paused) music.pause();
   }
+}// ===================== ОБНОВЛЕНИЕ ОБЪЕКТОВ ЗОНЫ =====================
+function refreshZoneObjects() {
+  // Показываем/скрываем медцентры и гим-здания
+  document.querySelectorAll('#world > .building, #world > .trainer').forEach(el => {
+    const m = el.style.transform.match(/translate\(([-\d.]+)px,\s*([-\d.]+)px\)/);
+    if (!m) return;
+    const cx = parseFloat(m[1]);
+    const cy = parseFloat(m[2]);
+    const biome = getZoneBiomeAt(cx, cy);
+    if (!biome) return;
+    const unlocked = unlockedZones.has(biome);
+    el.style.display = unlocked ? 'flex' : 'none';
+    if (el._labelEl) el._labelEl.style.display = unlocked ? 'block' : 'none';
+  });
 }
 function checkUnlockNextZone(currentBiome){
-  const idx=ZONE_ORDER.indexOf(currentBiome);
-  if(idx===-1||idx>=ZONE_ORDER.length-1)return;
-  const nextBiome=ZONE_ORDER[idx+1];
-  if(unlockedZones.has(nextBiome))return;
-  const prog=zoneProgress[currentBiome]||{defeated:0};
-  if((prog.defeated||0)>=DEFAULT_UNLOCK.count){
-unlockedZones.add(nextBiome);
+  const idx = ZONE_ORDER.indexOf(currentBiome);
+  if(idx === -1 || idx >= ZONE_ORDER.length - 1) return;
+  const nextBiome = ZONE_ORDER[idx + 1];
+  if(unlockedZones.has(nextBiome)) return;
+  const prog = zoneProgress[currentBiome] || {defeated:0};
+  if((prog.defeated||0) >= DEFAULT_UNLOCK.count){
+    unlockedZones.add(nextBiome);
     saveProgress();
     drawBackground();
+    drawTopLayer();
+    spawnHouses();            // ← ДОБАВЛЕНО
     rebuildFogClouds();
-    updateQuestMarkers();   // ФИКС: показать значки ! в новой зоне
-    showToast(`🗺️ Открыта новая зона: ${HABITATS[nextBiome].name}!`,3500);
+    refreshZoneObjects();
+    updateQuestMarkers();
+    showToast(`🗺️ Открыта новая зона: ${HABITATS[nextBiome].name}!`, 3500);
   }
 }
 
